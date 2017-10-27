@@ -27,7 +27,7 @@
   @Component
   export default class MainCanvas extends Vue {
 
-    grid: GridPaper
+    grid: any
     editor: LayoutEditor
 
     mounted () {

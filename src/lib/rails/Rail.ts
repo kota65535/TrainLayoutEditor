@@ -329,7 +329,7 @@ export class Rail {
      * @returns {Rectangle}
      */
     getBounds() {
-        return this.pathGroup.bounds;
+        return new Group(this.railParts.map(rp => rp.path)).bounds
     }
 
     /**
@@ -338,7 +338,13 @@ export class Rail {
      * @param ver
      */
     scale(hor, ver) {
-        this.pathGroup.scale(hor, ver);
+      let group = new Group()
+      group.addChildren(this.railParts.map(rp => rp.path))
+      group.addChildren(this.joints.map(rp => rp.path))
+      group.scale(hor, ver)
+      // group.removeChildren()
+      // group.remove()
+      // this.railParts.forEach(rp => rp.scale(hor, ver));
     }
 
     animate(event) {

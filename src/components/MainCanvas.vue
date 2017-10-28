@@ -9,12 +9,17 @@
 <script lang="ts">
   import Vue from 'vue'
   import Component from 'vue-class-component'
-  import * as paper from "paper"
+  import * as paper from 'paper'
   import logger from "../logging";
   import {GridPaper} from '../lib/GridPaper'
   import {LayoutEditor} from '../lib/LayoutEditor'
   import {PaletteItem, PaletteItemType} from "../lib/PaletteItem";
-  let log = logger('MainCanvas');
+  import {Point} from "paper";
+  import {StraightRail} from "../lib/rails/StraightRail";
+  import {RectPart} from "../lib/rails/parts/primitives/RectPart";
+  import {Watch} from "vue-property-decorator";
+  import {State} from "vuex-class"
+  let log = logger('MainCanvas')
 
   const BOARD_WIDTH = 6000;     // ボード幅
   const BOARD_HEIGHT = 4000;    // ボード高さ
@@ -27,11 +32,19 @@
   @Component
   export default class MainCanvas extends Vue {
 
-    grid: any
+    grid: GridPaper
     editor: LayoutEditor
 
+    @State
+    paletteItem: PaletteItem
+
+    @Watch('paletteItem')
+    onSetPaletteItem () {
+      this.editor.selectPaletteItem(this.paletteItem)
+    }
+
     mounted () {
-      paper.setup("editor-canvas");
+      paper.setup("editor-canvas")
 
       // レイヤー１にグリッドを描画
       this.grid = new GridPaper("editor-canvas", BOARD_WIDTH, BOARD_HEIGHT, GRID_SIZE,
@@ -79,18 +92,14 @@
         this.grid.windowOnMouseMove(e);
       });
 
-      window.addEventListener("mousewheel", (e) => {
+      window.addEventListener('mousewheel', (e) => {
         this.grid.windowOnMouseWheel(e);
 //            return false;
       }, false);
-
-      // TODO: ボタンクリックイベントで選択するようにする
-      this.editor.selectPaletteItem({
-        type: PaletteItemType.RAIL,
-        id: "S280",
-        name: "S280"
-      })
     }
+
+
+
   }
 </script>
 
@@ -99,6 +108,7 @@
     position: fixed;
     top: 50px;                  /* height of toolbar */
     left: 240px;                /* width of palette */
+    max-width: 3000px;
     width: calc(100% - 240px);
     height: calc(100% - 50px);
     z-index: 9900;              /* behind of palette */

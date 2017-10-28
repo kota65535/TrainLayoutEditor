@@ -17,7 +17,8 @@ const state: State = {
     folderName: "",
     folderId: ""
   },
-  layoutData: null
+  layoutData: null,
+  currentPalette: "builder-palette"
 }
 
 export default new Vuex.Store<State>({

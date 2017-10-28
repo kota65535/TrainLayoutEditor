@@ -1,11 +1,13 @@
 import {LayoutData} from "../lib/LayoutManager";
+import {PaletteItem} from "../lib/PaletteItem";
 
 export interface State {
-  paletteItem: any|null
+  paletteItem: PaletteItem|null
   layoutData: LayoutData
   fileInfo: FileInfo
   // authContext: AuthContext
   isSignedIn: boolean
+  currentPalette: string
 }
 
 export interface FileInfo {

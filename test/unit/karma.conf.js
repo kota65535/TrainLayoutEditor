@@ -16,11 +16,16 @@ module.exports = function (config) {
       'text/x-typescript': ['ts']
     },
     browsers: ['Chrome'],
-    frameworks: ['mocha', 'sinon-chai'],
+    frameworks: ['jasmine'],
     reporters: ['spec', 'coverage'],
-    files: [ './index.ts'],
+    files: [
+      "specs/lib/*.ts",        // libraries that cannot be included in bundle.js (ex. Google API client library)
+      "specs/**/*.spec.ts",    // all test files
+    ],
     preprocessors: {
-      './index.ts': ['webpack', 'sourcemap']
+      'src/**/*': ['webpack', 'sourcemap'],           // build all files in src folder
+      'specs/**/*.spec.ts': ['webpack', 'sourcemap'],  // all test files
+      'spec_helper.ts': ['webpack', 'sourcemap'],  // spec helper
     },
     webpack: webpackConfig,
     coverageReporter: {

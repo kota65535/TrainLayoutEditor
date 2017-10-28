@@ -7,9 +7,9 @@ export abstract class MultiPartBase extends PartBase {
     pathGroup: Group;
 
     // このクラス自身が持つ _angle, _position は一切使われない
-    get angle() { return this.parts[0].angle; }
+    get angle(): number { return this.parts[0].angle; }
     set angle(angle: number) { this.parts[0].angle = this.parts[0].angle; }
-    get position() { return this.parts[0].position; }
+    get position(): Point { return this.parts[0].position; }
     set position(position: Point) { this.parts[0].position = this.parts[0].position; }
     get visible(): boolean { return this.pathGroup.visible; }
     set visible(isVisible: boolean) { this.pathGroup.visible = isVisible; }

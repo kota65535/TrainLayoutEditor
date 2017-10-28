@@ -24,7 +24,8 @@ module.exports = {
     extensions: ['.js', '.ts', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      'src': resolve('src'),
+      'test': resolve('test'),
     }
   },
   module: {
@@ -54,7 +55,7 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           appendTsSuffixTo: [/\.vue$/],
-        }
+        },
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

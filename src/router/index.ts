@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router, {RouterOptions} from 'vue-router'
-import EditorView from '@/components/EditorView.vue'
+import EditorView from 'src/components/EditorView.vue'
 
 Vue.use(Router)
 

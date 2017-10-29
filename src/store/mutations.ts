@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
-import {FileInfo, State} from "./state";
+import {FileInfo, PowerPackState, State} from "./state";
 import {MutationTree} from "vuex";
 import {PaletteItem} from "../lib/PaletteItem";
 import {FeederStoreState, RailStoreState} from "../lib/LayoutEditorStoreProxy";
@@ -52,6 +52,9 @@ export default ({
   },
   [types.SET_RAIL_ANGLE](state: State, value: number) {
     state.railAngle = value
+  },
+  [types.ADD_POWER_PACK](state: State, powerPack: PowerPackState) {
+    state.powerPacks.push(powerPack)
   },
 }) as MutationTree<State>
 

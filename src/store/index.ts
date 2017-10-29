@@ -6,11 +6,13 @@ import mutations from './mutations'
 import createLogger, {LoggerOption} from 'vuex/dist/logger'
 import {State} from "./state";
 import {INITIAL_BUILDER_PALETTE_DATA} from "../constants";
+import {PaletteItem, PaletteItemType} from "../lib/PaletteItem";
 
 Vue.use(Vuex)
 
 const state: State = {
   paletteItem: null,
+  editorMode: PaletteItemType.RAIL,
   isSignedIn: false,
   fileInfo: {
     fileName: "",
@@ -31,7 +33,9 @@ const state: State = {
 
   rails: [],
   feederSockets: [],
-  gapSockets: []
+  gapSockets: [],
+
+  powerPacks: []
 }
 
 export default new Vuex.Store<State>({

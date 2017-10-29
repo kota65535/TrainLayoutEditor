@@ -2,10 +2,12 @@
  * Created by tozawa on 2017/07/03.
  */
 import {FeederStoreState} from "./LayoutEditorStoreProxy";
+import {PowerPackState} from "../store/state";
 
 export interface RunnerPaletteData {
   turnouts: any[]
   feeders: FeederStoreState[]
+  powerPacks: PowerPackState[]
   // turnoutData: Turnout[]
 }
 

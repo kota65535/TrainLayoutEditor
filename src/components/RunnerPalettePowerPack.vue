@@ -1,15 +1,34 @@
 <template>
-  <section>
-    <b-row>
-      <b-col cols=9>
-        <h4>Power Packs</h4>
-      </b-col>
-      <b-col cols=3>
-        <b-button size="sm" @click="onCreatePowerPack">+</b-button>
-      </b-col>
-    </b-row>
-    <runner-palette-power-pack v-for="powerPack in getRunnerPaletteData.powerPacks" :powerPack="powerPack"></runner-palette-power-pack>
-  </section>
+  <div class="card">
+    <div class="card-header">
+      <b-row>
+        <b-col cols=9>
+          <b-form-input id="input-small" size="sm" type="text" :value="powerPack.name"></b-form-input>
+        </b-col>
+        <b-col cols=3>
+          <b-button size="sm" @click="onAddFeeder">+</b-button>
+        </b-col>
+      </b-row>
+    </div>
+    <div class="card-body container">
+      <div class="row">
+        <div class="col-md-3">
+          <input type="checkbox">
+        </div>
+        <div class="col-md-9">
+          <input class="form-control" type="text"/>
+        </div>
+      </div>
+      <div class="row" v-for="feeder in powerPack.feeders">
+        <div class="col-md-3">
+          {{ feeder.name }}
+        </div>
+        <div class="col-md-9">
+          {{ feeder.name }}
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,30 +42,17 @@
   import paper, {Point} from "paper"
   import {FeederData} from "../lib/LayoutManager";
   import {FeederStoreState} from "../lib/LayoutEditorStoreProxy";
-  import {FlowDirection} from "../lib/rails/parts/FeederSocket";
+  import {FeederSocket, FlowDirection} from "../lib/rails/parts/FeederSocket";
   import {PowerPackState} from "../store/state";
-  import RunnerPalettePowerPack from './RunnerPalettePowerPack'
 
-  @Component({
-    components: {
-      RunnerPalettePowerPack
+  @Component
+  export default class RunnerPalettePowerPack extends Vue {
+    @Prop()
+    powerPack: PowerPackState
+
+    onAddFeeder () {
+
     }
-  })
-  export default class RunnerPaletteFeederSection extends Vue {
-    @Getter
-    getRunnerPaletteData
-
-    onCreatePowerPack (e: Event) {
-      let defaultName = `PowerPack ${this.getRunnerPaletteData.powerPacks.length + 1}`
-      this.$store.commit('ADD_POWER_PACK', {
-        name: defaultName,
-        power: 0,
-        direction: FlowDirection.START_TO_END,
-        feeders: []
-      } as PowerPackState)
-    }
-
-
   }
 </script>
 

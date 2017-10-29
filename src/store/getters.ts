@@ -21,7 +21,8 @@ export const getRunnerPaletteData =  (state: State): RunnerPaletteData => {
           }
         })
       }
-    })
+    }),
+    powerPacks: state.powerPacks
   }
 }
 

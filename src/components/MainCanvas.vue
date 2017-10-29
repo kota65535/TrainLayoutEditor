@@ -149,4 +149,8 @@
     width: 100%;
     height: 100%;
   }
+
+  /*#editor-canvas {*/
+    /*background: rgba(0,0,0, .2);*/
+  /*}*/
 </style>

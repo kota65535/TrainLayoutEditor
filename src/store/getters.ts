@@ -26,7 +26,7 @@ export const getRunnerPaletteData =  (state: State): RunnerPaletteData => {
 }
 
 
-export default ({
+  export default ({
   getBuilderPaletteData,
   getRunnerPaletteData
 }) as GetterTree<State, any>

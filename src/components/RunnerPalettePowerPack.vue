@@ -93,7 +93,7 @@
      */
     onAddFeeder () {
       this.$store.commit('SET_CURRENT_POWER_PACK', this.powerPack)
-      this.$store.commit('SET_EDITOR_MODE', EditorMode.FEEDER_SELECTING)
+      this.$store.commit('setEditorMode', EditorMode.FEEDER_SELECTING)
     }
   }
 </script>

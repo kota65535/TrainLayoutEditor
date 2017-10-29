@@ -1,7 +1,7 @@
 <template>
   <div class="main-canvas">
     <div class="container" id="editor-content-wrapper">
-      <canvas id="editor-canvas" resize></canvas>
+      <canvas id="editor-canvas" :class="{ darken: shouldDarken }" resize></canvas>
     </div>
   </div>
 </template>
@@ -37,6 +37,8 @@
     grid: GridPaper
     editor: LayoutEditor
 
+    shouldDarken: boolean = false
+
     @State
     editorMode: EditorMode
     @State
@@ -49,9 +51,15 @@
     currentPalette: string
 
     @Watch('editorMode')
-    onSetEditorMode () {
+    onSetEditorMode (editorMode: EditorMode) {
       this.editor.changeMode(this.editorMode)
+      if (editorMode === EditorMode.FEEDER_SELECTING) {
+        this.shouldDarken = true
+      } else {
+        this.shouldDarken = false
+      }
     }
+
     @Watch('paletteItemId')
     onSetPaletteItem () {
       this.editor.changePaletteRail(this.paletteItemId)
@@ -156,7 +164,7 @@
     height: 100%;
   }
 
-  /*#editor-canvas {*/
-    /*background: rgba(0,0,0, .2);*/
-  /*}*/
+  canvas.darken {
+    background: rgba(0,0,0, .2);
+  }
 </style>

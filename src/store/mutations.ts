@@ -54,17 +54,18 @@ export default ({
   [types.SET_PALETTE_ITEM](state: State, item: PaletteItem) {
     state.paletteItemId = item.id
   },
-  [types.SET_EDITOR_MODE](state: State, mode: EditorMode) {
-    state.editorMode = mode
-  },
   [types.SET_PERMIT_RAIL_INTERSECTION](state: State, value: boolean) {
     state.permitRailIntersection = value
   },
   [types.SET_RAIL_ANGLE](state: State, value: number) {
     state.railAngle = value
   },
-  [types.ADD_POWER_PACK](state: State, powerPack: PowerPackState) {
+  addPowerPack (state: State, powerPack: PowerPackState) {
     state.powerPacks.push(powerPack)
+  },
+
+  setEditorMode(state: State, mode: EditorMode) {
+    state.editorMode = mode
   },
 
   updatePowerPack(state: State, powerPack: PowerPackState) {

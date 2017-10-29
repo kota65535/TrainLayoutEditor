@@ -7,6 +7,7 @@ import logger from "../logging";
 import {GapSocket, GapState} from "./rails/parts/GapSocket";
 import {Store} from "vuex";
 import {State} from "../store/state";
+import {EditorMode} from "./PaletteItem";
 
 let log = logger("LayoutEditorStoreProxy");
 
@@ -58,6 +59,10 @@ export class LayoutEditorStoreProxy {
       power: 0,
       direction: feeder.flowDirection
     } as FeederStoreState)
+  }
+
+  commitSetEditorMode (mode: EditorMode) {
+    this.store.commit('setEditorMode', mode)
   }
 
   commitGaps(gaps: GapSocket[]) {

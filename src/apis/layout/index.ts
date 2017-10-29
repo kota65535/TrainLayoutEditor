@@ -6,8 +6,8 @@ export class LayoutAPI {
     this.endpoint = endpoint
   }
 
-  addFeeder(userId: number, feederId: number, power: number) {
-    fetch2(`${this.endpoint}/users/${userId}/feeders/${feederId}`, {
+  addPowerPack(userId: number, powerPackId: number) {
+    fetch2(`${this.endpoint}/users/${userId}/powerPacks/${powerPackId}`, {
       method: 'POST',
     }).then(res => {
       console.log(res)
@@ -16,9 +16,9 @@ export class LayoutAPI {
     })
   }
 
-  deleteFeeder(userId: number, feederId: number, power: number) {
-    fetch2(`${this.endpoint}/users/${userId}/feeders/${feederId}`, {
-      method: 'DELETE',
+  deletePowerPack(userId: number, powerPackId: number) {
+    fetch2(`${this.endpoint}/users/${userId}/powerPacks/${powerPackId}`, {
+      method: 'POST',
     }).then(res => {
       console.log(res)
     }).catch(res => {
@@ -37,8 +37,8 @@ export class LayoutAPI {
     })
   }
 
-  setPowerPackDirection(userId: number, feederId: number, direction: number) {
-    fetch2(`${this.endpoint}/users/${userId}/feeders/${feederId}`, {
+  setPowerPackDirection(userId: number, powerPackId: number, direction: number) {
+    fetch2(`${this.endpoint}/users/${userId}/powerPack/${powerPackId}`, {
       method: 'PUT',
       body: { direction: direction }
     }).then(res => {

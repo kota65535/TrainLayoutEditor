@@ -25,9 +25,24 @@ export default {
   setFeederDirection,
   setTurnoutDirection,
 
+  /**
+   * パレットアイテムおよびエディターモードを更新する
+   * @param {any} commit
+   * @param {PaletteItem} item
+   */
   setPaletteItem ({ commit }: any, item: PaletteItem) {
     commit(types.SET_PALETTE_ITEM, item)
-    commit(types.SET_EDITOR_MODE, item.mode)
+    commit('setEditorMode', item.mode)
+  },
+
+  /**
+   * パワーパックを追加する。
+   * @param {any} commit
+   * @param {PowerPackState} state
+   */
+  addPowerPack ( { commit }, state: PowerPackState) {
+    LayoutAPI.addPowerPack(GoogleAPI.getCurrentUser(), state.id)
+    commit('addPowerPack', state)
   },
 
   /**

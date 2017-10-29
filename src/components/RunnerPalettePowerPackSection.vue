@@ -38,7 +38,7 @@
 
     onCreatePowerPack (e: Event) {
       let defaultName = `PowerPack ${this.getRunnerPaletteData.powerPacks.length + 1}`
-      this.$store.commit('ADD_POWER_PACK', {
+      this.$store.commit('addPowerPack', {
         name: defaultName,
         power: 0,
         direction: FlowDirection.START_TO_END,

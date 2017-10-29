@@ -577,12 +577,6 @@ export class LayoutEditor {
 
     log.info("handleMouseDownLeft START----------");
 
-    // 何もなければ何もしない
-    if (!event.item) {
-      log.info("handleMouseDownLeft END by Nothing------------");
-      return;
-    }
-
     // ジョイント・レールパーツをクリックした時の処理
     if (this.isRailMode()) {
       // ジョイントの処理を優先
@@ -607,6 +601,12 @@ export class LayoutEditor {
       if (this.handleMouseDownLeftOnGapJoiner(event)) {
         log.info("handleMouseDownLeft END by Gap------------");
       }
+    }
+
+    // フィーダー選択モードは左クリック後にフィーダーモードに移る
+    // TODO: 本当にフィーダーモードに戻っていいのか考える
+    if (this.isFeederSelectingMode()) {
+      this.storeProxy.commitSetEditorMode(EditorMode.FEEDER)
     }
   }
 

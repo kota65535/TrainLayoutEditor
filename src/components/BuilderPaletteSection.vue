@@ -1,16 +1,16 @@
 <template>
   <section>
     <span class="sidebar-nav">{{ name }}</span>
-    <div class="row">
-      <div class="col-sm-6 palette-item" v-for="item in items">
+    <b-row>
+      <b-col cols=6 class="palette-item" v-for="item in items">
         <button type="button" class="btn btn-primary btn-block" @click="onItemClicked(item)">
           <div class="item-icon">
             <canvas class="button-canvas" :ref="`${item.id}-canvas`" :id="`${item.id}-canvas`"></canvas>
           </div>
           <div class="item-title">{{ item.name }}</div>
         </button>
-      </div>
-    </div>
+      </b-col>
+    </b-row>
   </section>
 </template>
 

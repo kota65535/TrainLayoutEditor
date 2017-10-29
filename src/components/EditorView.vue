@@ -1,7 +1,8 @@
 <template>
   <div class="editor-view">
     <menu-bar></menu-bar>
-    <component :is="currentPalette" :sectionParams="paletteSectionParams"></component>
+    <builder-palette v-show="currentPalette === 'builder-palette'"></builder-palette>
+    <runner-palette v-show="currentPalette === 'runner-palette'"></runner-palette>
     <main-canvas></main-canvas>
     <tool-bar></tool-bar>
   </div>
@@ -13,9 +14,9 @@
   import MainCanvas from './MainCanvas.vue'
   import ToolBar from './ToolBar.vue'
   import BuilderPalette from './BuilderPalette'
+  import RunnerPalette from './RunnerPalette'
   import Component from 'vue-class-component'
   import {State} from "vuex-class"
-  import {BUILDER_PALETTE_SECTION_PARAMS} from "../constants";
 
   @Component({
     components: {
@@ -23,12 +24,11 @@
       MainCanvas,
       ToolBar,
       BuilderPalette,
+      RunnerPalette
     }
   })
   export default class EditorView extends Vue {
     @State
     currentPalette: string
-
-    paletteSectionParams = BUILDER_PALETTE_SECTION_PARAMS
   }
 </script>

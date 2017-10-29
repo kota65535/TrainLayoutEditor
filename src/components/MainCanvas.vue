@@ -13,12 +13,14 @@
   import logger from "../logging";
   import {GridPaper} from '../lib/GridPaper'
   import {LayoutEditor} from '../lib/LayoutEditor'
+  import {LayoutEditorStoreProxy} from '../lib/LayoutEditorStoreProxy'
   import {PaletteItem, PaletteItemType} from "../lib/PaletteItem";
   import {Point} from "paper";
   import {StraightRail} from "../lib/rails/StraightRail";
   import {RectPart} from "../lib/rails/parts/primitives/RectPart";
   import {Watch} from "vue-property-decorator";
   import {State} from "vuex-class"
+  import {LayoutData} from "../lib/LayoutManager";
   let log = logger('MainCanvas')
 
   const BOARD_WIDTH = 6000;     // ボード幅
@@ -37,10 +39,33 @@
 
     @State
     paletteItem: PaletteItem
+    @State
+    permitRailIntersection: boolean
+    @State
+    railAngle: number
+    @State
+    currentPalette: string
 
     @Watch('paletteItem')
     onSetPaletteItem () {
       this.editor.selectPaletteItem(this.paletteItem)
+    }
+
+    @Watch('permitRailIntersection')
+    onSetPermitIntersection () {
+      this.editor.permitRailIntersection = this.permitRailIntersection
+    }
+
+    @Watch('railAngle')
+    onSetRailAngle (angle: number) {
+      // 角度は左回りとする
+      this.editor.gridJointsAngle = this.railAngle
+    }
+
+    @Watch('currentPalette')
+    onSetPalette (palette: string) {
+      if (palette === "runner-palette") {
+      }
     }
 
     mounted () {
@@ -53,7 +78,7 @@
       // レイヤー２に切り替え
       new paper.Layer();
 
-      this.editor = new LayoutEditor(this.grid);
+      this.editor = new LayoutEditor(this.grid, new LayoutEditorStoreProxy(this.$store));
 
       // 各種ハンドラの登録
       let tool = new paper.Tool();
@@ -96,6 +121,12 @@
         this.grid.windowOnMouseWheel(e);
 //            return false;
       }, false);
+
+      // 子コンポーネントがマウントされてから実行する
+      this.$nextTick(() => {
+
+        this.$store.commit('SET_PERMIT_RAIL_INTERSECTION', true)
+      })
     }
 
 

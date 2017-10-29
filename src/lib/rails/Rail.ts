@@ -13,6 +13,9 @@ import {GapSocket} from "./parts/GapSocket";
 
 let log = logger("Rail");
 
+export interface RailConductionMap {
+
+}
 
 /**
  * レールの基底クラス。レールはレールパーツとジョイントにより構成される。
@@ -37,9 +40,9 @@ export class Rail {
 
     // どのレールパーツに電気が流れるかを表す導電状態マップ。
     // 状態ID: 導電しているRailPartのIndexのArray
-    conductionMap: any = {
-        0: [0]
-    };
+    conductionMap: Array<Array<number>> = [
+      [0]
+    ]
     // 現在の導電状態
     conductionState: number = 0;
 

@@ -58,10 +58,10 @@ export class SimpleTurnout extends Rail {
         this.centerAngle = centerAngle;
         this.direction = direction;
 
-        this.conductionMap = {
-            0: [0],
-            1: [1]
-        };
+        this.conductionMap = [
+          [0],
+          [1]
+        ]
 
         this.move(startPoint, this.joints[0]);
         this.rotate(angle, this.joints[0]);
@@ -97,10 +97,10 @@ export class SymmetricalTurnout extends Rail {
         this.centerAngle = centerAngle;
 
 
-        this.conductionMap = {
-            0: [0],
-            1: [1]
-        };
+      this.conductionMap = [
+        [0],
+        [1]
+      ]
 
         this.move(startPoint, this.joints[0]);
         this.rotate(angle, this.joints[0]);
@@ -158,10 +158,10 @@ export class CurvedTurnout extends Rail {
         this.centerAngle = centerAngle;
         this.direction = direction;
 
-        this.conductionMap = {
-            0: [0],
-            1: [1]
-        };
+      this.conductionMap = [
+        [0],
+        [1]
+      ]
 
         this.move(startPoint, this.joints[anchorJointIndex]);
         this.rotate(this.angle, this.joints[anchorJointIndex]);

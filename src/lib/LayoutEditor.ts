@@ -15,15 +15,17 @@ import {GridPaper} from "./GridPaper";
 import {KeyEvent, Point, project, ToolEvent} from "paper";
 import {RailFactory} from "./RailFactory";
 import {GapSocket, GapState} from "./rails/parts/GapSocket";
+import {LayoutEditorStoreProxy} from "./LayoutEditorStoreProxy";
 
 let log = logger("LayoutEditor");
 
 
 export class LayoutEditor {
-    gridPaper: GridPaper;
-    layoutManager: LayoutManager;
-    layoutSimulator: LayoutSimulator;
-    railFactory: RailFactory;
+    gridPaper: GridPaper
+    layoutManager: LayoutManager
+    layoutSimulator: LayoutSimulator
+    railFactory: RailFactory
+    storeProxy: LayoutEditorStoreProxy
 
     // パレットで選択中のアイテム
     paletteItem: PaletteItem;
@@ -43,25 +45,28 @@ export class LayoutEditor {
     gridJoints: Joint[];
     gridJointsAngle: number;
 
+    permitRailIntersection: boolean
 
 
 
-    constructor(gridPaper) {
+  constructor(gridPaper: GridPaper, storeProxy: LayoutEditorStoreProxy) {
 
-        this.gridPaper =  gridPaper;
-        this.layoutManager = new LayoutManager();
-        this.layoutSimulator = new LayoutSimulator();
-        this.railFactory = new RailFactory();
+    this.gridPaper =  gridPaper
+    this.layoutManager = new LayoutManager();
+    this.layoutSimulator = new LayoutSimulator();
+    this.railFactory = new RailFactory();
+    this.storeProxy = storeProxy
 
-        this.paletteRail = null;
-        this.paletteRailAngle = 0;
-        this.touchedFeederSocket = null;
+    this.paletteRail = null;
+    this.paletteRailAngle = 0;
+    this.touchedFeederSocket = null;
 
-        this.jointIndexOfGuide = null;
+    this.jointIndexOfGuide = null;
 
-        this.gridJoints = [];
-        this.gridJointsAngle = 0;
-    }
+    this.gridJoints = [];
+    this.gridJointsAngle = 0;
+    this.permitRailIntersection = false;
+  }
 
 
     //====================
@@ -380,11 +385,13 @@ export class LayoutEditor {
     putSelectedRail(toJoint: Joint) {
         // 接続先のレールよりも上に移動する。設置したレールのジョイントの当たり判定を優先したいので。
         this.paletteRail.pathGroup.bringToFront();
-        let result = this.layoutManager.putRail(this.paletteRail, this.getCurrentJointOfGuide(), toJoint);
+        let result = this.layoutManager.putRail(
+          this.paletteRail, this.getCurrentJointOfGuide(), toJoint, this.permitRailIntersection);
         if (result) {
             this.gridPaper.paths.push(this.paletteRail.pathGroup);
             this.selectRail(<any>cloneRail(this.paletteRail));
             this.jointIndexOfGuide = null;
+            this.storeProxy.commitRails(this.layoutManager.rails)
         }
     }
 
@@ -417,7 +424,8 @@ export class LayoutEditor {
      * フィーダーを設置する。
      */
     putFeeder(feederSocket: FeederSocket) {
-        this.layoutManager.putFeeder(feederSocket);
+      this.layoutManager.putFeeder(feederSocket)
+      this.storeProxy.commitFeeders(this.layoutManager.feederSockets)
     }
 
     //==============================
@@ -455,7 +463,8 @@ export class LayoutEditor {
      * ギャップジョイナーを設置する。
      */
     putGap(gapSocket: GapSocket) {
-        this.layoutManager.putGap(gapSocket);
+      this.layoutManager.putGap(gapSocket);
+      this.storeProxy.commitGaps(this.layoutManager.gapSockets)
     }
 
     //==============================

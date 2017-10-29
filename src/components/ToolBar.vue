@@ -34,16 +34,19 @@
     angle: number = 0
 
     @Watch('angle')
-    onAngleChanged (value) {
-      this.$store.dispatch('setAngle', value)
+    onAngleChanged (value: string) {
+      let intValue = parseInt(value)
+      if (intValue) {
+        this.$store.commit('SET_RAIL_ANGLE', intValue)
+      }
     }
 
     openBuildPalette () {
-
+      this.$store.commit('SET_PALETTE', "builder-palette")
     }
 
     openRunPalette () {
-
+      this.$store.commit('SET_PALETTE', "runner-palette")
     }
   }
 

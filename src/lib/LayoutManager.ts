@@ -45,9 +45,9 @@ export class LayoutManager {
     // ジョイント間の距離がこの値よりも近い場合は接続している扱いにする
     static JOINT_TO_JOINT_TOLERANCE = 2;
 
-    rails: Rail[];           // レイアウトを構成するレール
-    feederSockets: FeederSocket[];  // フィーダーがささっているフィーダーソケット
-    gapSockets: GapSocket[];        // ギャップを
+    rails: Rail[];                  // レイアウトを構成するレール
+    feederSockets: FeederSocket[];  // フィーダーがささっている差込口
+    gapSockets: GapSocket[];        // ギャップがささっている差込口
 
     _nextRailId: number;
 
@@ -189,8 +189,8 @@ export class LayoutManager {
      * @param {Joint} to
      * @returns {Boolean} true if succeeds, false otherwise.
      */
-    putRail(rail: Rail, fromJoint: Joint, to: Joint|Point) {
-        if (!this._canPutRail(rail)) {
+    putRail(rail: Rail, fromJoint: Joint, to: Joint|Point, permitIntersection: boolean) {
+        if (!permitIntersection && !this._canPutRail(rail)) {
             log.warn("The rail cannot be put because of intersection.");
             return false;
         }

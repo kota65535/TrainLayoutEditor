@@ -5,6 +5,7 @@ import actions from './actions'
 import mutations from './mutations'
 import createLogger, {LoggerOption} from 'vuex/dist/logger'
 import {State} from "./state";
+import {INITIAL_BUILDER_PALETTE_DATA} from "../constants";
 
 Vue.use(Vuex)
 
@@ -17,8 +18,20 @@ const state: State = {
     folderName: "",
     folderId: ""
   },
-  layoutData: null,
-  currentPalette: "builder-palette"
+  layoutData: {
+    nextRailId: 0,
+    rails: [],
+    feeders: [],
+    gaps: []
+  },
+  currentPalette: "builder-palette",
+  permitRailIntersection: undefined,
+  railAngle: 0,
+  builderPaletteData: INITIAL_BUILDER_PALETTE_DATA,
+
+  rails: [],
+  feederSockets: [],
+  gapSockets: []
 }
 
 export default new Vuex.Store<State>({

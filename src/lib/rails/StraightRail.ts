@@ -78,9 +78,9 @@ export class GappedStraightRail extends Rail {
 
         this.length = length;
 
-        this.conductionMap = {
-            0: []
-        };
+        this.conductionMap = [
+          []
+        ]
 
         this.move(startPoint, this.joints[0]);
         this.rotate(angle, this.joints[0]);

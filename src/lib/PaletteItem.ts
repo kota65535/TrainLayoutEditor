@@ -1,8 +1,20 @@
 /**
  * Created by tozawa on 2017/07/03.
  */
+import {FeederStoreState} from "./LayoutEditorStoreProxy";
 
-export interface PaletteSectionParam {
+export interface RunnerPaletteData {
+  turnouts: any[]
+  feeders: FeederStoreState[]
+  // turnoutData: Turnout[]
+}
+
+
+export interface BuilderPaletteData {
+  sections: BuilderPaletteSectionData[]
+}
+
+export interface BuilderPaletteSectionData {
   name: string;
   items: PaletteItem[];
 }

@@ -1,7 +1,7 @@
 import * as types from './mutation-types'
 import {FileInfo, PowerPackState, State} from "./state";
 import {MutationTree} from "vuex";
-import {PaletteItem} from "../lib/PaletteItem";
+import {EditorMode, PaletteItem} from "../lib/PaletteItem";
 import {FeederStoreState, RailStoreState} from "../lib/LayoutEditorStoreProxy";
 
 export default ({
@@ -17,12 +17,19 @@ export default ({
   [types.SET_FEEDER](state: State, feederSockets: FeederStoreState[]) {
     state.feederSockets = feederSockets
   },
+  [types.SELECT_FEEDER](state: State, feederSocket: FeederStoreState) {
+    state.selectedFeederSocket = feederSocket
+  },
   [types.SET_FEEDER_FLOW_DIRECTION](state: State, payload: FeederStoreState) {
     let index = state.feederSockets.findIndex(e => e.name === payload.name)
     if (index >= 0) {
       state.feederSockets[index].direction = payload.direction
     }
   },
+  [types.SET_CURRENT_POWER_PACK](state: State, powerPack: PowerPackState) {
+    state.currentPowerPack = powerPack
+  },
+
   [types.SET_FEEDER_FLOW_POWER](state: State, payload: FeederStoreState) {
     let index = state.feederSockets.findIndex(e => e.name === payload.name)
     if (index >= 0) {
@@ -45,7 +52,10 @@ export default ({
     state.currentPalette = palette
   },
   [types.SET_PALETTE_ITEM](state: State, item: PaletteItem) {
-    state.paletteItem = item
+    state.paletteItemId = item.id
+  },
+  [types.SET_EDITOR_MODE](state: State, mode: EditorMode) {
+    state.editorMode = mode
   },
   [types.SET_PERMIT_RAIL_INTERSECTION](state: State, value: boolean) {
     state.permitRailIntersection = value
@@ -55,6 +65,13 @@ export default ({
   },
   [types.ADD_POWER_PACK](state: State, powerPack: PowerPackState) {
     state.powerPacks.push(powerPack)
+  },
+
+  updatePowerPack(state: State, powerPack: PowerPackState) {
+    let index = state.powerPacks.findIndex(e => e.name === powerPack.name)
+    if (index >= 0) {
+      state.powerPacks[index] = powerPack
+    }
   },
 }) as MutationTree<State>
 

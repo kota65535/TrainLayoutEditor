@@ -26,8 +26,8 @@ export class LayoutAPI {
     })
   }
 
-  setFeederPower(userId: number, feederId: number, power: number) {
-    fetch2(`${this.endpoint}/users/${userId}/feeders/${feederId}`, {
+  setPowerPackPower(userId: number, powerPackId: number, power: number) {
+    fetch2(`${this.endpoint}/users/${userId}/powerPacks/${powerPackId}`, {
       method: 'PUT',
       body: { power: power }
     }).then(res => {
@@ -37,7 +37,7 @@ export class LayoutAPI {
     })
   }
 
-  setFeederDirection(userId: number, feederId: number, direction: number) {
+  setPowerPackDirection(userId: number, feederId: number, direction: number) {
     fetch2(`${this.endpoint}/users/${userId}/feeders/${feederId}`, {
       method: 'PUT',
       body: { direction: direction }

@@ -14,7 +14,7 @@
   import {GridPaper} from '../lib/GridPaper'
   import {LayoutEditor} from '../lib/LayoutEditor'
   import {LayoutEditorStoreProxy} from '../lib/LayoutEditorStoreProxy'
-  import {PaletteItem, PaletteItemType} from "../lib/PaletteItem";
+  import {PaletteItem, EditorMode} from "../lib/PaletteItem";
   import {Point} from "paper";
   import {StraightRail} from "../lib/rails/StraightRail";
   import {RectPart} from "../lib/rails/parts/primitives/RectPart";
@@ -38,7 +38,9 @@
     editor: LayoutEditor
 
     @State
-    paletteItem: PaletteItem
+    editorMode: EditorMode
+    @State
+    paletteItemId: string
     @State
     permitRailIntersection: boolean
     @State
@@ -46,9 +48,13 @@
     @State
     currentPalette: string
 
-    @Watch('paletteItem')
+    @Watch('editorMode')
+    onSetEditorMode () {
+      this.editor.changeMode(this.editorMode)
+    }
+    @Watch('paletteItemId')
     onSetPaletteItem () {
-      this.editor.selectPaletteItem(this.paletteItem)
+      this.editor.changePaletteRail(this.paletteItemId)
     }
 
     @Watch('permitRailIntersection')
@@ -124,8 +130,8 @@
 
       // 子コンポーネントがマウントされてから実行する
       this.$nextTick(() => {
-
         this.$store.commit('SET_PERMIT_RAIL_INTERSECTION', true)
+        Vue.prototype.$editor = this.editor
       })
     }
 

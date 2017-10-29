@@ -1,11 +1,11 @@
 import {LayoutData} from "../lib/LayoutManager";
-import {PaletteItem, BuilderPaletteData, PaletteItemType} from "../lib/PaletteItem";
+import {PaletteItem, BuilderPaletteData, EditorMode} from "../lib/PaletteItem";
 import {FeederStoreState, RailStoreState} from "../lib/LayoutEditorStoreProxy";
 import {FeederSocket, FlowDirection} from "../lib/rails/parts/FeederSocket";
 
 export interface State {
-  paletteItem: PaletteItem|null
-  editorMode: PaletteItemType
+  paletteItemId: string|null
+  editorMode: EditorMode|null
   layoutData: LayoutData
   fileInfo: FileInfo
   // authContext: AuthContext
@@ -19,6 +19,9 @@ export interface State {
   feederSockets: FeederStoreState[];  // フィーダーがささっている差込口のID
   gapSockets: string[];     // ギャップがささっている差込口
   powerPacks: PowerPackState[]
+
+  selectedFeederSocket: FeederStoreState
+  currentPowerPack: PowerPackState
 }
 
 
@@ -36,8 +39,9 @@ export interface AuthContext {
 
 
 export interface PowerPackState {
+  id: number
   name: string
   power: number
   direction: FlowDirection
-  feeders: FeederSocket[]
+  feeders: FeederStoreState[]
 }

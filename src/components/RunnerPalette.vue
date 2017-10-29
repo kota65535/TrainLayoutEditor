@@ -1,7 +1,7 @@
 <template>
   <section class="runner-palette">
     <div class="container-fluid">
-      <runner-palette-feeder-section/>
+      <runner-palette-power-pack-section/>
       <runner-palette-turnout-section/>
     </div>
   </section>
@@ -12,14 +12,14 @@
   import Component from 'vue-class-component'
   import {Prop} from 'vue-property-decorator'
   import {Getter} from 'vuex-class'
-  import RunnerPaletteFeederSection from './RunnerPaletteFeederSection'
+  import RunnerPalettePowerPackSection from './RunnerPalettePowerPackSection'
   import RunnerPaletteTurnoutSection from './RunnerPaletteTurnoutSection'
   import {PaletteItem} from '../lib/PaletteItem'
   import logger from '../logging'
 
   @Component({
     components: {
-      RunnerPaletteFeederSection,
+      RunnerPalettePowerPackSection,
       RunnerPaletteTurnoutSection
     }
   })

@@ -18,7 +18,7 @@
   import Component from 'vue-class-component'
   import {Model, Prop, Watch} from 'vue-property-decorator'
   import {State, Getter} from "vuex-class"
-  import {PaletteItem, PaletteItemType, RunnerPaletteData} from '../lib/PaletteItem'
+  import {PaletteItem, EditorMode, RunnerPaletteData} from '../lib/PaletteItem'
   import logger from '../logging'
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"

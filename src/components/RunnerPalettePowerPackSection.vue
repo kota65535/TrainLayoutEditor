@@ -17,7 +17,7 @@
   import Component from 'vue-class-component'
   import {Model, Prop, Watch} from 'vue-property-decorator'
   import {State, Getter} from "vuex-class"
-  import {PaletteItem, PaletteItemType} from '../lib/PaletteItem'
+  import {PaletteItem, EditorMode} from '../lib/PaletteItem'
   import logger from '../logging'
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
@@ -32,7 +32,7 @@
       RunnerPalettePowerPack
     }
   })
-  export default class RunnerPaletteFeederSection extends Vue {
+  export default class RunnerPalettePowerPackSection extends Vue {
     @Getter
     getRunnerPaletteData
 

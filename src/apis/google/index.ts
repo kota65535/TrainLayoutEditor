@@ -77,6 +77,10 @@ export class GoogleAPIManager {
     this.authAPI.signIn();
   }
 
+  getCurrentUser() {
+    return this.authAPI.getCurrentUser();
+  }
+
   signOut() {
     this.authAPI.signOut();
   }

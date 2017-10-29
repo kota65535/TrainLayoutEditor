@@ -13,6 +13,11 @@ import 'bootstrap-slider'
 import 'bootstrap-slider/dist/css/bootstrap-slider.css'
 import 'lodash'
 import BootstrapVue from 'bootstrap-vue'
+import bFormSlider from 'vue-bootstrap-slider';
+import 'bootstrap-slider/dist/css/bootstrap-slider.css'
+
+
+Vue.use(bFormSlider)
 
 Vue.config.productionTip = false
 

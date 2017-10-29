@@ -4,9 +4,6 @@
 import { StraightRail, DoubleStraightRail, GappedStraightRail } from "./rails/StraightRail";
 import { CurveRail, DoubleCurveRail } from "./rails/CurveRail";
 import {CurvedTurnout, SimpleTurnout, SymmetricalTurnout, TurnoutDirection} from "./rails/Turnout";
-import {Feeder} from "./rails/parts/Feeder";
-import {TrianglePart} from "./rails/parts/primitives/TrianglePart";
-import {PaletteItemType} from "./PaletteItem";
 import * as paper from "paper";
 
 
@@ -76,7 +73,7 @@ export class RailFactory {
     // Feeder() {
     //     let feeder = new TrianglePart(DEFAULT_POSITION, 0, Feeder.WIDTH, Feeder.HEIGHT, Feeder.FILL_COLOR_OPEN);
     //     feeder.getItemType = () => {
-    //         return PaletteItemType.FEEDER;
+    //         return EditorMode.FEEDER;
     //     };
     //     return feeder;
     // }

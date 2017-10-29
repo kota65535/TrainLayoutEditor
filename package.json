@@ -28,6 +28,7 @@
     "popper.js": "^1.12.6",
     "typescript": "^2.5.3",
     "vue": "^2.5.2",
+    "vue-bootstrap-slider": "^1.1.1",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",

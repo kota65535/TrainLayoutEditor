@@ -51,6 +51,15 @@ export class LayoutEditorStoreProxy {
     }))
   }
 
+  commitFeedersSelected (feeder: FeederSocket) {
+    this.store.commit('SELECT_FEEDER', {
+      name: feeder.name,
+      // TODO: set power
+      power: 0,
+      direction: feeder.flowDirection
+    } as FeederStoreState)
+  }
+
   commitGaps(gaps: GapSocket[]) {
     // this.store
   }

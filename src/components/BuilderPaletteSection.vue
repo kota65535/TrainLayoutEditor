@@ -19,7 +19,7 @@
   import Component from 'vue-class-component'
   import {Prop} from 'vue-property-decorator'
   import {State} from "vuex-class"
-  import {PaletteItem, PaletteItemType} from '../lib/PaletteItem'
+  import {PaletteItem, EditorMode} from '../lib/PaletteItem'
   import logger from '../logging'
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
@@ -42,8 +42,8 @@
         paper.setup(target);
         let canvas = this.$refs[target][0]
 
-        switch (item.type) {
-          case PaletteItemType.RAIL:
+        switch (item.mode) {
+          case EditorMode.RAIL:
             let rail = factory[item.id]();
             let bounds = rail.getBounds();
             let center = new Point((<any>canvas).clientWidth / 2, (<any>canvas).clientHeight / 2);

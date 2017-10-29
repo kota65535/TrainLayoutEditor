@@ -13,10 +13,10 @@
     <div class="card-body container">
       <div class="row">
         <div class="col-md-3">
-          <input type="checkbox">
+          <input type="checkbox" v-model="powerPack.direction">
         </div>
         <div class="col-md-9">
-          <input class="form-control" type="text"/>
+          <b-form-slider :min="1" :max="255" v-model="powerPack.power"></b-form-slider>
         </div>
       </div>
       <div class="row" v-for="feeder in powerPack.feeders">
@@ -36,7 +36,7 @@
   import Component from 'vue-class-component'
   import {Model, Prop, Watch} from 'vue-property-decorator'
   import {State, Getter} from "vuex-class"
-  import {PaletteItem, PaletteItemType} from '../lib/PaletteItem'
+  import {PaletteItem, EditorMode} from '../lib/PaletteItem'
   import logger from '../logging'
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
@@ -47,11 +47,53 @@
 
   @Component
   export default class RunnerPalettePowerPack extends Vue {
+
     @Prop()
     powerPack: PowerPackState
 
-    onAddFeeder () {
+    @State
+    selectedFeederSocket: FeederStoreState
 
+    @State
+    currentPowerPack: PowerPackState
+
+    /**
+     * パワーパックに選択したフィーダーを追加する
+     */
+    @Watch('selectedFeederSocket')
+    onFeederSelected (selectedFeederSocket: FeederStoreState) {
+      // Addボタンを押したのがこのパワーパックで、かつ選択されたフィーダーが未登録の場合
+      if (this.powerPack.name === this.currentPowerPack.name
+        && this.powerPack.feeders.filter( f => f.name === this.selectedFeederSocket.name).length === 0
+      ) {
+        this.powerPack.feeders.push(selectedFeederSocket)
+        this.$store.commit('updatePowerPack', this.powerPack)
+      }
+    }
+
+    /**
+     * スライダーの値をもとに、パワーパックのパワーを更新する
+     */
+    @Watch('powerPack.power')
+    onPowerChanged () {
+      this.$store.dispatch('setPowerPackPower', this.powerPack)
+    }
+
+    /**
+     * スライダーの値をもとに、パワーパックの方向を更新する
+     */
+    @Watch('powerPack.direction')
+    onDirectionChanged () {
+      this.powerPack.power = 0
+      this.$store.dispatch('setPowerPackDirection', this.powerPack)
+    }
+
+    /**
+     * 現在のパワーパックを設定し、フィーダー選択モードに入る。
+     */
+    onAddFeeder () {
+      this.$store.commit('SET_CURRENT_POWER_PACK', this.powerPack)
+      this.$store.commit('SET_EDITOR_MODE', EditorMode.FEEDER_SELECTING)
     }
   }
 </script>

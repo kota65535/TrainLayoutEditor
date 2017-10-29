@@ -21,15 +21,16 @@ export interface BuilderPaletteSectionData {
   items: PaletteItem[];
 }
 
-export enum PaletteItemType {
-    RAIL,
-    FEEDER,
-    GAP_JOINER
+export enum EditorMode {
+  RAIL,
+  FEEDER,
+  GAP_JOINER,
+  FEEDER_SELECTING
 }
 
 export interface PaletteItem {
-    type: PaletteItemType;
-    id: string;
-    name: string;
+  mode: EditorMode;
+  id: string;
+  name: string;
 }
 

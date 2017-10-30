@@ -2,9 +2,10 @@ import * as types from './mutation-types'
 import {ActionTree} from "vuex";
 import {PowerPackState, State} from "./state";
 import {PaletteItem} from "../lib/PaletteItem";
-import {FeederStoreState, RailStoreState} from "../lib/LayoutEditorStoreProxy";
 import LayoutAPI from "../apis/layout";
 import GoogleAPI from "../apis/google";
+import {FeederStoreState} from "../lib/rails/parts/FeederSocket";
+import {RailStoreState} from "../lib/rails/Rail";
 
 
 export const setSignInStatus = ({ commit }: any, isSignedIn: boolean) => {

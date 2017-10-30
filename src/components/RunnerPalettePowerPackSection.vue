@@ -17,12 +17,11 @@
   import Component from 'vue-class-component'
   import {Model, Prop, Watch} from 'vue-property-decorator'
   import {State, Getter} from "vuex-class"
-  import {PaletteItem, EditorMode} from '../lib/PaletteItem'
+  import {PaletteItem, EditorMode, RunnerPaletteData} from '../lib/PaletteItem'
   import logger from '../logging'
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
   import {FeederData} from "../lib/LayoutManager";
-  import {FeederStoreState} from "../lib/LayoutEditorStoreProxy";
   import {FeederDirection} from "../lib/rails/parts/FeederSocket";
   import {PowerPackState} from "../store/state";
   import RunnerPalettePowerPack from './RunnerPalettePowerPack'
@@ -34,14 +33,14 @@
   })
   export default class RunnerPalettePowerPackSection extends Vue {
     @Getter
-    getRunnerPaletteData
+    getRunnerPaletteData: RunnerPaletteData
 
     onCreatePowerPack (e: Event) {
       let defaultName = `PowerPack ${this.getRunnerPaletteData.powerPacks.length + 1}`
       this.$store.commit('addPowerPack', {
         name: defaultName,
         power: 0,
-        direction: FeederDirection.START_TO_END,
+        direction: true,
         feeders: []
       } as PowerPackState)
     }

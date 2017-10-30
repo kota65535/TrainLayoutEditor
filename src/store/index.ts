@@ -45,5 +45,6 @@ export default new Vuex.Store<State>({
   actions: actions,
   mutations: mutations,
   plugins: process.env.NODE_ENV !== 'production' ?
-    [createLogger({collapsed: false} as LoggerOption<State>)] : []
+    [createLogger({collapsed: false} as LoggerOption<State>)] : [],
+  strict: true
 } as StoreOptions<State>)

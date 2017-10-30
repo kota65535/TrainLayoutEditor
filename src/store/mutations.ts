@@ -2,7 +2,9 @@ import * as types from './mutation-types'
 import {FileInfo, PowerPackState, State} from "./state";
 import {MutationTree} from "vuex";
 import {EditorMode, PaletteItem} from "../lib/PaletteItem";
-import {FeederStoreState, RailStoreState} from "../lib/LayoutEditorStoreProxy";
+import {RailStoreState} from "../lib/rails/Rail";
+import {FeederStoreState} from "../lib/rails/parts/FeederSocket";
+import Vue from "vue";
 
 export default ({
   [types.SET_SIGNIN_STATUS](state: State, isSignedIn: boolean) {
@@ -20,21 +22,8 @@ export default ({
   [types.SELECT_FEEDER](state: State, feederSocket: FeederStoreState) {
     state.selectedFeederSocket = feederSocket
   },
-  [types.SET_FEEDER_FLOW_DIRECTION](state: State, payload: FeederStoreState) {
-    let index = state.feederSockets.findIndex(e => e.name === payload.name)
-    if (index >= 0) {
-      state.feederSockets[index].direction = payload.direction
-    }
-  },
   [types.SET_CURRENT_POWER_PACK](state: State, powerPack: PowerPackState) {
     state.currentPowerPack = powerPack
-  },
-
-  [types.SET_FEEDER_FLOW_POWER](state: State, payload: FeederStoreState) {
-    let index = state.feederSockets.findIndex(e => e.name === payload.name)
-    if (index >= 0) {
-      state.feederSockets[index].power = payload.power
-    }
   },
   [types.SET_TURNOUT_DIRECTION](state: State, payload: RailStoreState) {
     let index = state.rails.findIndex(e => e.name === payload.name)
@@ -70,9 +59,17 @@ export default ({
 
   updatePowerPack(state: State, powerPack: PowerPackState) {
     let index = state.powerPacks.findIndex(e => e.name === powerPack.name)
-    if (index >= 0) {
-      state.powerPacks[index] = powerPack
+    if (index < 0) {
+      throw new Error(`PowerPack named ${powerPack.name} not found.`)
     }
+    Vue.set(state.powerPacks, index, powerPack)
+
+    powerPack.feeders.forEach(feeder => {
+      let index = state.feederSockets.findIndex(e => e.name === feeder.name)
+      if (index >= 0) {
+        Vue.set(state.feederSockets, index, feeder)
+      }
+    })
   },
 }) as MutationTree<State>
 

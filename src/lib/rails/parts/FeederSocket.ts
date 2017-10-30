@@ -8,7 +8,7 @@ import {DetectablePart, DetectionState} from "./primitives/DetectablePart";
 import {CirclePart} from "./primitives/CirclePart";
 import {RailPart} from "./RailPart";
 import {Path} from "paper";
-import {FeederStoreState} from "../../LayoutEditorStoreProxy";
+import {Storable} from "../Storable";
 
 let log = logger("FeederSocket");
 
@@ -31,11 +31,19 @@ export enum FeederDirection {
   ILLEGAL
 }
 
+/**
+ * Storeに格納するためのフィーダーソケットの状態
+ */
+export interface FeederStoreState {
+  name: string
+  power: number
+  flowDirection: boolean
+}
 
 /**
  * レールの両端の中点に存在するフィーダー差し込み口を表すクラス。
  */
-export class FeederSocket extends DetectablePart {
+export class FeederSocket extends DetectablePart implements Storable<FeederStoreState> {
   // 定数
   static WIDTH = 6;
   static HEIGHT = 12;
@@ -45,7 +53,8 @@ export class FeederSocket extends DetectablePart {
 
   private _railPart: RailPart;             // 所属するレールパーツ
   private _connectedFeeder: Feeder;        // 接続されたフィーダーオブジェクト
-  private _direction: FeederDirection;              // フィーダーの向き
+  private _feederDirection: FeederDirection;              // フィーダーの向き
+  private _flowDirection: boolean
   private _connectionState: FeederConnectionState;  // フィーダー接続状態
   private _power: number
 
@@ -61,9 +70,11 @@ export class FeederSocket extends DetectablePart {
     let circle = new CirclePart(railPart.middlePoint, angle, FeederSocket.HIT_RADIUS, FeederSocket.FILL_COLORS[0]);
     super(railPart.middlePoint, angle, rect, circle, FeederSocket.FILL_COLORS, FeederSocket.OPACITIES, false);
 
-    this._railPart = railPart;
-    this._direction = direction;
-    this._connectedFeeder = null;
+    this._railPart = railPart
+    this._feederDirection = direction
+    this._flowDirection = true
+    this._power = 0
+    this._connectedFeeder = null
 
     // 最初は無効で未接続状態
     this.enabled = true;
@@ -80,8 +91,11 @@ export class FeederSocket extends DetectablePart {
   get connectedFeeder(): Feeder { return this._connectedFeeder; }
   set connectedFeeder(value: Feeder) { this._connectedFeeder = value; }
 
-  get direction(): FeederDirection { return this._direction }
-  set direction(value: FeederDirection) { this._direction = value }
+  get feederDirection(): FeederDirection { return this._feederDirection }
+  set feederDirection(value: FeederDirection) { this._feederDirection = value }
+
+  get flowDirection(): boolean { return this._flowDirection; }
+  set flowDirection(value: boolean) { this._flowDirection = value; }
 
   get connectionState() { return this._connectionState; }
   set connectionState(feederState: FeederConnectionState) {
@@ -127,7 +141,7 @@ export class FeederSocket extends DetectablePart {
 
   // フィーダー(Feederオブジェクトそのもの)の接続点
   get feederPosition() {
-    switch(this._direction) {
+    switch(this._feederDirection) {
       case FeederDirection.START_TO_END:
         return this.basePart.getCenterOfBottom();
       case FeederDirection.END_TO_START:
@@ -138,7 +152,7 @@ export class FeederSocket extends DetectablePart {
 
   // フィーダーの向きによって角度は変わる
   get angle() {
-    switch(this._direction) {
+    switch(this._feederDirection) {
       case FeederDirection.START_TO_END:
         return this.basePart.angle;
       case FeederDirection.END_TO_START:
@@ -150,7 +164,7 @@ export class FeederSocket extends DetectablePart {
     return {
       name: this.name,
       power: this.power,
-      direction: this.direction
+      flowDirection: this.flowDirection
     }
   }
 
@@ -159,7 +173,7 @@ export class FeederSocket extends DetectablePart {
       throw new Error(`FeederSocket name does not match (${this.name} !== ${state.name})`)
     }
     if (state.power) this.power = state.power
-    if (state.direction) this.direction = state.direction
+    if (state.flowDirection) this.flowDirection = state.flowDirection
   }
 
 
@@ -167,14 +181,7 @@ export class FeederSocket extends DetectablePart {
    * 電流方向をトグルする。
    */
   toggleDirection() {
-    switch(this._direction) {
-      case FeederDirection.START_TO_END:
-        this._direction = FeederDirection.END_TO_START;
-        break;
-      case FeederDirection.END_TO_START:
-        this._direction = FeederDirection.START_TO_END;
-        break;
-    }
+    this.flowDirection = ! this.flowDirection
   }
 
   /**

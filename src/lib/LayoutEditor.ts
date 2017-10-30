@@ -14,7 +14,7 @@ import {PaletteItem, EditorMode} from "./PaletteItem";
 import {GridPaper} from "./GridPaper";
 import {KeyEvent, Point, project, ToolEvent} from "paper";
 import {RailFactory} from "./RailFactory";
-import {GapSocket, GapState} from "./rails/parts/GapSocket";
+import {GapSocket, GapConnectionState} from "./rails/parts/GapSocket";
 import {LayoutEditorStoreProxy} from "./LayoutEditorStoreProxy";
 
 let log = logger("LayoutEditor");
@@ -453,7 +453,7 @@ export class LayoutEditor {
    */
   hideGapToPut() {
     // 接続試行中ならガイドを消去する
-    if (this.touchedGapSocket && this.touchedGapSocket.gapState === GapState.CONNECTING) {
+    if (this.touchedGapSocket && this.touchedGapSocket.connectionState === GapConnectionState.CONNECTING) {
       this.touchedGapSocket.disconnect();
       if (this.touchedGapSocket.joint.isConnected()) {
         this.touchedGapSocket.joint.connectedJoint.gapSocket.disconnect();
@@ -541,7 +541,7 @@ export class LayoutEditor {
     let gap = this.layoutManager.getGapSocket(event.point);
     if (this.isGapJoinerMode()) {
       // ギャップソケット上かつ接続中でないならギャップ設置ガイドを表示する
-      if (gap && gap.gapState !== GapState.CONNECTED) {
+      if (gap && gap.connectionState !== GapConnectionState.CONNECTED) {
         this.showGapToPut(gap);
       }
     }
@@ -677,7 +677,7 @@ export class LayoutEditor {
       return false;
     }
     // 未接続ならギャップ接続処理、接続済みなら選択処理
-    if (gapSocket.gapState !== GapState.CONNECTED) {
+    if (gapSocket.connectionState !== GapConnectionState.CONNECTED) {
       this.putGap(gapSocket);
     } else {
       gapSocket.basePart.path.selected = !gapSocket.basePart.path.selected;

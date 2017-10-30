@@ -23,8 +23,8 @@
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
   import {FeederData} from "../lib/LayoutManager";
-  import {FeederStoreState, RailStoreState} from "../lib/LayoutEditorStoreProxy";
   import {FeederDirection} from "../lib/rails/parts/FeederSocket";
+  import {RailStoreState} from "../lib/rails/Rail";
 
   @Component
   export default class RunnerPaletteTurnoutSection extends Vue {

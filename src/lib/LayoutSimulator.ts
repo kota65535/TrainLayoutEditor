@@ -73,15 +73,15 @@ export class LayoutSimulator {
 
     simulateFlow(feeder: FeederSocket) {
         // フィーダーの刺さっているレールパーツの電流方向を設定
-        // feeder.railPart.direction = feeder.direction;
-        this._setTemporaryFlowDirection(feeder.railPart, feeder, feeder.direction);
-        // this.temporaryFlowDirections[feeder.railPart.name][feeder.name] = feeder.direction;
+        // feeder.railPart.feederDirection = feeder.feederDirection;
+        this._setTemporaryFlowDirection(feeder.railPart, feeder, feeder.feederDirection);
+        // this.temporaryFlowDirections[feeder.railPart.name][feeder.name] = feeder.feederDirection;
         // レールパーツの両端のジョイントを取得する
         let rail = feeder.railPart.rail;
         let startJoint, endJoint;
         [startJoint, endJoint] = rail.getJointsFromRailPart(feeder.railPart);
 
-        switch (feeder.direction) {
+        switch (feeder.feederDirection) {
             case FeederDirection.START_TO_END:
                 this.traceTemporaryFlowRecursively(feeder, startJoint, true);
                 this.traceTemporaryFlowRecursively(feeder, endJoint, false);
@@ -129,7 +129,7 @@ export class LayoutSimulator {
 
         // 電流方向をセットし、処理済みであることをマークする
         this._setTemporaryFlowDirection(conductiveRailPart, feederSocket, flowDirection);
-        // conductiveRailPart.direction = direction;
+        // conductiveRailPart.feederDirection = feederDirection;
         // conductiveRailPart.simulated = true;
 
         // 導電状態を更新したこのレールパーツが上になるよう描画する

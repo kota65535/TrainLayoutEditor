@@ -13,10 +13,10 @@
     <div class="card-body container">
       <div class="row">
         <div class="col-md-3">
-          <input type="checkbox" v-model="powerPack.direction">
+          <input type="checkbox" v-model="direction">
         </div>
         <div class="col-md-9">
-          <b-form-slider :min="0" :max="255" v-model="powerPack.power"></b-form-slider>
+          <b-form-slider :min="0" :max="255" v-model="power"></b-form-slider>
         </div>
       </div>
       <div class="row" v-for="feeder in powerPack.feeders">
@@ -41,9 +41,9 @@
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
   import {FeederData} from "../lib/LayoutManager";
-  import {FeederStoreState} from "../lib/LayoutEditorStoreProxy";
-  import {FeederSocket, FeederDirection} from "../lib/rails/parts/FeederSocket";
+  import {FeederSocket, FeederDirection, FeederStoreState} from "../lib/rails/parts/FeederSocket";
   import {PowerPackState} from "../store/state";
+  import clone from "clone"
 
   @Component
   export default class RunnerPalettePowerPack extends Vue {
@@ -57,6 +57,10 @@
     @State
     currentPowerPack: PowerPackState
 
+    power: number = 0
+
+    direction: boolean = true
+
     /**
      * パワーパックに選択したフィーダーを追加する
      */
@@ -66,26 +70,34 @@
       if (this.powerPack.name === this.currentPowerPack.name
         && this.powerPack.feeders.filter( f => f.name === this.selectedFeederSocket.name).length === 0
       ) {
-        this.powerPack.feeders.push(selectedFeederSocket)
-        this.$store.commit('updatePowerPack', this.powerPack)
+        let powerPack = clone(this.powerPack)
+        powerPack.feeders.push(selectedFeederSocket)
+        this.$store.commit('updatePowerPack', powerPack)
       }
     }
 
     /**
      * スライダーの値をもとに、パワーパックのパワーを更新する
      */
-    @Watch('powerPack.power')
+    @Watch('power')
     onPowerChanged () {
-      this.$store.dispatch('setPowerPackPower', this.powerPack)
+      let powerPack = clone(this.powerPack)
+      powerPack.power = this.power
+      powerPack.feeders.forEach(f => f.power = powerPack.power)
+      this.$store.dispatch('setPowerPackPower', powerPack)
     }
 
     /**
      * スライダーの値をもとに、パワーパックの方向を更新する
      */
-    @Watch('powerPack.direction')
+    @Watch('direction')
     onDirectionChanged () {
-      this.powerPack.power = 0
-      this.$store.dispatch('setPowerPackDirection', this.powerPack)
+      let powerPack = clone(this.powerPack)
+      powerPack.power = 0
+      powerPack.feeders.forEach(f => f.power = 0)
+      powerPack.direction = this.direction
+      powerPack.feeders.forEach(f => f.flowDirection = powerPack.direction)
+      this.$store.dispatch('setPowerPackDirection', powerPack)
     }
 
     /**

@@ -21,6 +21,8 @@
   import {Watch} from "vue-property-decorator";
   import {State} from "vuex-class"
   import {LayoutData} from "../lib/LayoutManager";
+  import {FeederStoreState} from "../lib/rails/parts/FeederSocket";
+  import {RailStoreState} from "../lib/rails/Rail";
   let log = logger('MainCanvas')
 
   const BOARD_WIDTH = 6000;     // ボード幅
@@ -49,6 +51,10 @@
     railAngle: number
     @State
     currentPalette: string
+    @State
+    rails: RailStoreState[]
+    @State
+    feederSockets: FeederStoreState[]
 
     @Watch('editorMode')
     onSetEditorMode (editorMode: EditorMode) {
@@ -79,6 +85,20 @@
     @Watch('currentPalette')
     onSetPalette (palette: string) {
       if (palette === "runner-palette") {
+      }
+    }
+
+    @Watch('rails')
+    onRailsChanged (){
+      for (let i=0 ; i < this.rails.length ; ++i) {
+        this.editor.layoutManager.rails[i].storeState = this.rails[i]
+      }
+    }
+
+    @Watch('feederSockets')
+    onFeederChanged (){
+      for (let i=0 ; i < this.feederSockets.length ; ++i) {
+        this.editor.layoutManager.feederSockets[i].storeState = this.feederSockets[i]
       }
     }
 
@@ -142,8 +162,6 @@
         Vue.prototype.$editor = this.editor
       })
     }
-
-
 
   }
 </script>

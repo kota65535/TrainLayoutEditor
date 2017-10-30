@@ -9,15 +9,21 @@ import logger from "../../logging";
 import {Group, Point} from "paper";
 import {RailPart} from "./parts/RailPart";
 import {GapSocket} from "./parts/GapSocket";
-import {RailStoreState} from "../LayoutEditorStoreProxy";
+import {Storable} from "./Storable";
 
 const log = logger("Rail");
+
+export interface RailStoreState {
+  name: string
+  conductionState: number
+  conductionStateSize: number
+}
 
 /**
  * レールの基底クラス。レールはレールパーツとジョイントにより構成される。
  * 単独ではなく、継承されて使用される想定。
  */
-export class Rail {
+export class Rail implements Storable<RailStoreState> {
 
   // レール間の間隔
   static SPACE = 38;

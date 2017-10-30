@@ -1,8 +1,8 @@
 /**
  * Created by tozawa on 2017/07/03.
  */
-import {FeederStoreState} from "./LayoutEditorStoreProxy";
 import {PowerPackState} from "../store/state";
+import {FeederStoreState} from "./rails/parts/FeederSocket";
 
 export interface RunnerPaletteData {
   turnouts: any[]

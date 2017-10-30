@@ -118,7 +118,7 @@ export class LayoutManager {
             layoutData.feeders.forEach( entry => {
                 let feederSocket = this.allFeederSockets.find(fs => fs.name === entry.name);
                 feederSocket.enabled = true;
-                feederSocket.direction = entry.direction;
+                feederSocket.feederDirection = entry.direction;
                 feederSocket.connect();
                 this.feederSockets.push(feederSocket);
             })
@@ -150,7 +150,7 @@ export class LayoutManager {
             feeders: this.feederSockets.map(feeder => {
                 return {
                     name: feeder.name,
-                    direction: feeder.direction
+                    direction: feeder.feederDirection
                 }
             }),
             gaps: this.gapSockets.map(gap => {

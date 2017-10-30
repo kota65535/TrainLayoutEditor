@@ -14,10 +14,10 @@ let log = logger("GapSocket");
 /**
  * ギャップの接続状態
  */
-export enum GapState {
-    OPEN = 0,       // ギャップ未接続
-    CONNECTING,     // ギャップ接続中
-    CONNECTED       // ギャップ接続後
+export enum GapConnectionState {
+  OPEN = 0,       // ギャップ未接続
+  CONNECTING,     // ギャップ接続中
+  CONNECTED       // ギャップ接続後
 }
 
 
@@ -31,133 +31,132 @@ export enum GapState {
  */
 export class GapSocket extends DetectablePart {
 
-    // 定数
-    static WIDTH = 6;
-    static HEIGHT = 12;
-    static HIT_RADIUS = 20;
-    static FILL_COLORS = ["red", "deepskyblue", "red"];
-    static OPACITIES = [0.1, 0.2];
+  // 定数
+  static WIDTH = 6;
+  static HEIGHT = 12;
+  static HIT_RADIUS = 20;
+  static FILL_COLORS = ["red", "deepskyblue", "red"];
+  static OPACITIES = [0.1, 0.2];
 
+  private _joint: Joint;                        // 所属するジョイント
+  private _connectedGap: Gap;                   // 接続されたギャップオブジェクト
+  private _connectionState: GapConnectionState; // ギャップの接続状態
 
-    joint: Joint;             // 所属するジョイント
-    connectedGap: Gap;        // 接続されたギャップオブジェクト
-    _gapState: GapState;      // ギャップ接続状態
+  /**
+   * ジョイントに仮想的なギャップの差込口をセットする。
+   * @param {Joint} joint
+   */
+  constructor(joint: Joint) {
+    let base = new CirclePart(joint.position, 0, 5, 'black');
+    let detection = new CirclePart(joint.position, 0, GapSocket.HIT_RADIUS, GapSocket.FILL_COLORS[0]);
+    super(joint.position, joint.angle, base, detection, GapSocket.FILL_COLORS, GapSocket.OPACITIES, false);
 
-    get gapState() { return this._gapState; }
-    set gapState(gapState: GapState) { this._setGapState(gapState); }
+    this._joint = joint;
+    this._connectedGap = null;
 
-    get enabled() { return this._enabled; }
-    set enabled(isEnabled: boolean) {
-        super.enabled = isEnabled;
-        // 現在のギャップ接続状態を再設定しておく
-        if (isEnabled) {
-            this._setGapState(this._gapState);
-        }
-        // 接続されたギャップがあれば同じ状態に変更する
-        // if (this.connectedGap) {
-        //     this.connectedGap.visible = isEnabled;
-        // }
+    // 最初は無効で未接続状態
+    this.enabled = true;
+    this.connectionState = GapConnectionState.OPEN;
+    this.enabled = false;
+  }
+
+  get joint(): Joint { return this._joint; }
+  set joint(value: Joint) { this._joint = value; }
+
+  get connectedGap(): Gap { return this._connectedGap; }
+  set connectedGap(value: Gap) { this._connectedGap = value; }
+
+  get connectionState() { return this._connectionState; }
+  set connectionState(gapState: GapConnectionState) {
+    if (this._enabled) {
+      switch(gapState) {
+        case GapConnectionState.OPEN:
+          this.detectionState = DetectionState.BEFORE_DETECT;
+          break;
+        case GapConnectionState.CONNECTING:
+          this.detectionState = DetectionState.DETECTING;
+          break;
+        case GapConnectionState.CONNECTED:
+          this.detectionState = DetectionState.AFTER_DETECT;
+          break;
+      }
+      // 接続されたギャップがあれば同じ状態に変更する
+      if (this._connectedGap) {
+        this._connectedGap.state = gapState;
+      }
+      this._connectionState = gapState;
+    }
+    this.showInfo();
+  }
+
+  get enabled() { return this._enabled; }
+  set enabled(isEnabled: boolean) {
+    super.enabled = isEnabled;
+    // 現在のギャップ接続状態を再設定しておく
+    if (isEnabled) {
+      this.connectionState = this._connectionState
+    }
+    // 接続されたギャップがあれば同じ状態に変更する
+    // if (this.connectedGap) {
+    //     this.connectedGap.visible = isEnabled;
+    // }
+  }
+
+  // 主パーツはRectPartであることが分かっているのでキャストする
+  get basePart(): RectPart { return <RectPart>this.parts[0]; }
+
+  /**
+   * このソケットにギャップを接続する。
+   * @param isDryRun
+   */
+  connect(isDryRun: boolean = false) {
+    if (!this.isConnected()) {
+      this._connectedGap = new Gap(this);
     }
 
-    // 主パーツはRectPartであることが分かっているのでキャストする
-    get basePart(): RectPart { return <RectPart>this.parts[0]; }
-
-
-    /**
-     * ジョイントに仮想的なギャップの差込口をセットする。
-     * @param {Joint} joint
-     */
-    constructor(joint: Joint) {
-        let base = new CirclePart(joint.position, 0, 5, 'black');
-        let detection = new CirclePart(joint.position, 0, GapSocket.HIT_RADIUS, GapSocket.FILL_COLORS[0]);
-        super(joint.position, joint.angle, base, detection, GapSocket.FILL_COLORS, GapSocket.OPACITIES, false);
-
-        this.joint = joint;
-        this.connectedGap = null;
-
-        // 最初は無効で未接続状態
-        this.enabled = true;
-        this.gapState = GapState.OPEN;
-        this.enabled = false;
-        // this._setGapState(GapState.OPEN);
-
-        // console.log("GapSocket", this.railPart.path.position);
+    if (isDryRun) {
+      this.connectionState = GapConnectionState.CONNECTING
+    } else {
+      this.connectionState = GapConnectionState.CONNECTED
     }
+  }
 
-    /**
-     * このソケットにギャップを接続する。
-     * @param isDryRun
-     */
-    connect(isDryRun: boolean = false) {
-        if (!this.isConnected()) {
-            this.connectedGap = new Gap(this);
-        }
-
-        if (isDryRun) {
-            this._setGapState(GapState.CONNECTING);
-        } else {
-            this._setGapState(GapState.CONNECTED);
-        }
+  /**
+   * このソケットからギャップを削除する。
+   */
+  disconnect() {
+    if (! this.isConnected()) {
+      return;
     }
+    this._connectedGap.remove();
+    this.connectionState = GapConnectionState.OPEN
+    this._connectedGap = null;
+  }
 
-    /**
-     * このソケットからギャップを削除する。
-     */
-    disconnect() {
-        if (! this.isConnected()) {
-            return;
-        }
-        this.connectedGap.remove();
-        this._setGapState(GapState.OPEN);
-        this.connectedGap = null;
-    }
+  /**
+   * ギャップが接続されているか否かを返す。
+   * @returns {boolean}
+   */
+  isConnected(): boolean {
+    return !!this._connectedGap;
+  }
 
-    /**
-     * ギャップが接続されているか否かを返す。
-     * @returns {boolean}
-     */
-    isConnected(): boolean {
-        return !!this.connectedGap;
+  /**
+   * 指定のパスを含むか否かを返す。
+   * ソケットにギャップが接続されている場合、ギャップにも含まれているか調べる。
+   * @param {"paper".Path} path
+   * @returns {boolean}
+   */
+  containsPath(path: Path): boolean {
+    if (this.isConnected()) {
+      return super.containsPath(path) || this._connectedGap.containsPath(path);
+    } else {
+      return super.containsPath(path);
     }
+  }
 
-    /**
-     * 指定のパスを含むか否かを返す。
-     * ソケットにギャップが接続されている場合、ギャップにも含まれているか調べる。
-     * @param {"paper".Path} path
-     * @returns {boolean}
-     */
-    containsPath(path: Path): boolean {
-        if (this.isConnected()) {
-            return super.containsPath(path) || this.connectedGap.containsPath(path);
-        } else {
-            return super.containsPath(path);
-        }
-    }
 
-    private _setGapState(gapState: GapState) {
-        if (this._enabled) {
-            switch(gapState) {
-                case GapState.OPEN:
-                    this.detectionState = DetectionState.BEFORE_DETECT;
-                    break;
-                case GapState.CONNECTING:
-                    this.detectionState = DetectionState.DETECTING;
-                    break;
-                case GapState.CONNECTED:
-                    this.detectionState = DetectionState.AFTER_DETECT;
-                    break;
-            }
-            // 接続されたギャップがあれば同じ状態に変更する
-            if (this.connectedGap) {
-                this.connectedGap.state = gapState;
-            }
-            this._gapState = gapState;
-        }
-        this.showInfo();
-        // log.info(`GapSocket @${this.joint.name}: basePart.path=${this.basePart.path.position}, detectPart.path=${this.detectionPart.path.position}`);
-    }
-
-    showInfo() {
-        log.info(`GapSocket @${this.joint.name}: enabled=${this.enabled}, state=${this.gapState}, detect=${this.detectionState}`);
-    }
+  showInfo() {
+    log.info(`GapSocket @${this._joint.name}: enabled=${this.enabled}, state=${this.connectionState}, detect=${this.detectionState}`);
+  }
 }

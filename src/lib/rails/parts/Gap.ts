@@ -2,10 +2,9 @@
  * Created by tozawa on 2017/07/03.
  */
 
-import {TrianglePart} from "./primitives/TrianglePart";
 import logger from "../../../logging";
 import {RectPart} from "./primitives/RectPart";
-import {GapSocket, GapState} from "./GapSocket";
+import {GapSocket, GapConnectionState} from "./GapSocket";
 let log = logger("Gap");
 
 /**
@@ -24,7 +23,7 @@ export class Gap extends RectPart {
         log.debug(`Gap @${this.gapSocket ? this.gapSocket.name : null}: visible=${this.visible}`);
     }
 
-    set state(state: GapState) {
+    set state(state: GapConnectionState) {
         // ギャップソケットの色に合わせるだけ
         this.path.fillColor = this.gapSocket.fillColors[state];
     }
@@ -46,6 +45,6 @@ export class Gap extends RectPart {
 
         // 有効化
         this.visible = true;
-        this.state = gapSocket.gapState;
+        this.state = gapSocket.connectionState;
     }
 }

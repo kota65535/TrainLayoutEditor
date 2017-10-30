@@ -53,7 +53,7 @@ export class LayoutEditor {
 
     this.gridPaper =  gridPaper
     this.layoutManager = new LayoutManager();
-    this.layoutSimulator = new LayoutSimulator();
+    this.layoutSimulator = new LayoutSimulator(storeProxy);
     this.railFactory = new RailFactory();
     this.storeProxy = storeProxy
 

@@ -2,6 +2,7 @@ import {LayoutData} from "../lib/LayoutManager";
 import {PaletteItem, BuilderPaletteData, EditorMode} from "../lib/PaletteItem";
 import {FeederSocket, FeederDirection, FeederStoreState} from "../lib/rails/parts/FeederSocket";
 import {RailStoreState} from "../lib/rails/Rail";
+import {FlowDirectionTable} from "../lib/LayoutSimulator";
 
 export interface State {
   paletteItemId: string|null
@@ -22,6 +23,8 @@ export interface State {
 
   selectedFeederSocket: FeederStoreState
   currentPowerPack: PowerPackState
+
+  flowDirectionTable: FlowDirectionTable
 }
 
 

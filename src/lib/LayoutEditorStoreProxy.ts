@@ -8,6 +8,7 @@ import {GapSocket} from "./rails/parts/GapSocket";
 import {Store} from "vuex";
 import {State} from "../store/state";
 import {EditorMode} from "./PaletteItem";
+import {FlowDirectionTable} from "./LayoutSimulator";
 
 let log = logger("LayoutEditorStoreProxy");
 
@@ -37,5 +38,9 @@ export class LayoutEditorStoreProxy {
 
   commitGaps(gaps: GapSocket[]) {
     // this.store
+  }
+
+  commitFlowDirectionTable(table: FlowDirectionTable) {
+    this.store.commit('setFlowDirectionTable', table)
   }
 }

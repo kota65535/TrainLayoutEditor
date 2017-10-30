@@ -5,6 +5,7 @@ import {EditorMode, PaletteItem} from "../lib/PaletteItem";
 import {RailStoreState} from "../lib/rails/Rail";
 import {FeederStoreState} from "../lib/rails/parts/FeederSocket";
 import Vue from "vue";
+import {FlowDirectionTable} from "../lib/LayoutSimulator";
 
 export default ({
   [types.SET_SIGNIN_STATUS](state: State, isSignedIn: boolean) {
@@ -71,6 +72,9 @@ export default ({
       }
     })
   },
+  setFlowDirectionTable(state: State, table: FlowDirectionTable) {
+    state.flowDirectionTable = table
+  }
 }) as MutationTree<State>
 
 

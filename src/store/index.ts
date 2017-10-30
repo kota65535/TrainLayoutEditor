@@ -36,7 +36,9 @@ const state: State = {
 
   powerPacks: [],
   selectedFeederSocket: null,
-  currentPowerPack: null
+  currentPowerPack: null,
+
+  flowDirectionTable: null
 }
 
 export default new Vuex.Store<State>({

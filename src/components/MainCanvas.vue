@@ -100,6 +100,7 @@
       for (let i=0 ; i < this.feederSockets.length ; ++i) {
         this.editor.layoutManager.feederSockets[i].storeState = this.feederSockets[i]
       }
+      this.editor.startSimulation()
     }
 
     mounted () {

@@ -6,7 +6,7 @@ import {Feeder} from "./Feeder";
 import logger from "../../../logging";
 import {DetectablePart, DetectionState} from "./primitives/DetectablePart";
 import {CirclePart} from "./primitives/CirclePart";
-import {RailPart} from "./RailPart";
+import {FlowDirection, RailPart} from "./RailPart";
 import {Path} from "paper";
 import {Storable} from "../Storable";
 
@@ -25,10 +25,8 @@ export enum FeederConnectionState {
  * フィーダーソケットの電流の向き
  */
 export enum FeederDirection {
-  NONE,           // 電流なし。レールパーツに対して使用され、フィーダー自体には使用されない
   START_TO_END,
   END_TO_START,
-  ILLEGAL
 }
 
 /**
@@ -40,6 +38,7 @@ export interface FeederStoreState {
   flowDirection: boolean
 }
 
+
 /**
  * レールの両端の中点に存在するフィーダー差し込み口を表すクラス。
  */
@@ -50,11 +49,21 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
   static HIT_RADIUS = 20;
   static FILL_COLORS = ["limegreen", "deepskyblue", "limegreen"];
   static OPACITIES = [0.2, 0.4];
+  static TO_FLOW_DIR = {
+    [FeederDirection.START_TO_END]: [
+      FlowDirection.END_TO_START,
+      FlowDirection.START_TO_END
+    ],
+    [FeederDirection.END_TO_START]: [
+      FlowDirection.START_TO_END,
+      FlowDirection.END_TO_START
+    ]
+  }
 
   private _railPart: RailPart;             // 所属するレールパーツ
   private _connectedFeeder: Feeder;        // 接続されたフィーダーオブジェクト
-  private _feederDirection: FeederDirection;              // フィーダーの向き
-  private _flowDirection: boolean
+  private _direction: FeederDirection;              // フィーダーの向き
+  private _polarity: boolean
   private _connectionState: FeederConnectionState;  // フィーダー接続状態
   private _power: number
 
@@ -71,8 +80,8 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
     super(railPart.middlePoint, angle, rect, circle, FeederSocket.FILL_COLORS, FeederSocket.OPACITIES, false);
 
     this._railPart = railPart
-    this._feederDirection = direction
-    this._flowDirection = true
+    this._direction = direction
+    this._polarity = true
     this._power = 0
     this._connectedFeeder = null
 
@@ -91,11 +100,11 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
   get connectedFeeder(): Feeder { return this._connectedFeeder; }
   set connectedFeeder(value: Feeder) { this._connectedFeeder = value; }
 
-  get feederDirection(): FeederDirection { return this._feederDirection }
-  set feederDirection(value: FeederDirection) { this._feederDirection = value }
+  get direction(): FeederDirection { return this._direction }
+  set direction(value: FeederDirection) { this._direction = value }
 
-  get flowDirection(): boolean { return this._flowDirection; }
-  set flowDirection(value: boolean) { this._flowDirection = value; }
+  get polarity(): boolean { return this._polarity; }
+  set polarity(value: boolean) { this._polarity = value; }
 
   get connectionState() { return this._connectionState; }
   set connectionState(feederState: FeederConnectionState) {
@@ -141,7 +150,7 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
 
   // フィーダー(Feederオブジェクトそのもの)の接続点
   get feederPosition() {
-    switch(this._feederDirection) {
+    switch(this._direction) {
       case FeederDirection.START_TO_END:
         return this.basePart.getCenterOfBottom();
       case FeederDirection.END_TO_START:
@@ -152,7 +161,7 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
 
   // フィーダーの向きによって角度は変わる
   get angle() {
-    switch(this._feederDirection) {
+    switch(this._direction) {
       case FeederDirection.START_TO_END:
         return this.basePart.angle;
       case FeederDirection.END_TO_START:
@@ -160,11 +169,16 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
     }
   }
 
+  // 接続しているレールの電流方向
+  get flowDirection(): FlowDirection {
+    return FeederSocket.TO_FLOW_DIR[this.direction][this.polarity ? 1 : 0]
+  }
+
   get storeState(): FeederStoreState {
     return {
       name: this.name,
       power: this.power,
-      flowDirection: this.flowDirection
+      flowDirection: this.polarity
     }
   }
 
@@ -172,8 +186,8 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
     if (this.name !== state.name) {
       throw new Error(`FeederSocket name does not match (${this.name} !== ${state.name})`)
     }
-    if (state.power) this.power = state.power
-    if (state.flowDirection) this.flowDirection = state.flowDirection
+    if (state.power !== null) this.power = state.power
+    if (state.flowDirection !== null) this.polarity = state.flowDirection
   }
 
 
@@ -181,7 +195,7 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
    * 電流方向をトグルする。
    */
   toggleDirection() {
-    this.flowDirection = ! this.flowDirection
+    this.polarity = ! this.polarity
   }
 
   /**

@@ -23,7 +23,7 @@
   import paper, {Point} from "paper"
   import {FeederData} from "../lib/LayoutManager";
   import {FeederStoreState} from "../lib/LayoutEditorStoreProxy";
-  import {FlowDirection} from "../lib/rails/parts/FeederSocket";
+  import {FeederDirection} from "../lib/rails/parts/FeederSocket";
   import {PowerPackState} from "../store/state";
   import RunnerPalettePowerPack from './RunnerPalettePowerPack'
 
@@ -41,7 +41,7 @@
       this.$store.commit('addPowerPack', {
         name: defaultName,
         power: 0,
-        direction: FlowDirection.START_TO_END,
+        direction: FeederDirection.START_TO_END,
         feeders: []
       } as PowerPackState)
     }

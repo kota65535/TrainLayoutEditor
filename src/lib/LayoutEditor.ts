@@ -2,7 +2,7 @@
  * Created by tozawa on 2017/07/12.
  */
 import {Joint, JointDirection, JointState} from "./rails/parts/Joint";
-import {FeederSocket, FeederState} from "./rails/parts/FeederSocket";
+import {FeederSocket, FeederConnectionState} from "./rails/parts/FeederSocket";
 import {Rail} from "./rails/Rail";
 import {CurveRail} from "./rails/CurveRail";
 import {cloneRail, serialize, deserialize} from "./RailUtil";
@@ -417,7 +417,7 @@ export class LayoutEditor {
    */
   hideFeederToPut() {
     // 接続試行中ならガイドを消去する
-    if (this.touchedFeederSocket && this.touchedFeederSocket.feederState === FeederState.CONNECTING) {
+    if (this.touchedFeederSocket && this.touchedFeederSocket.connectionState === FeederConnectionState.CONNECTING) {
       this.touchedFeederSocket.disconnect();
     }
     // このとき接触しているフィーダーは無い
@@ -527,7 +527,7 @@ export class LayoutEditor {
     let feederSocket = this.layoutManager.getFeederSocket(event.point);
 
     // フィーダーソケット上かつ接続中でないならフィーダー設置ガイドを表示する
-    if (feederSocket && feederSocket.feederState !== FeederState.CONNECTED) {
+    if (feederSocket && feederSocket.connectionState !== FeederConnectionState.CONNECTED) {
       this.showFeederToPut(feederSocket);
     }
   }
@@ -653,7 +653,7 @@ export class LayoutEditor {
       return false;
     }
     // 未接続ならフィーダー接続処理、接続済みなら選択処理
-    if (feederSocket.feederState !== FeederState.CONNECTED) {
+    if (feederSocket.connectionState !== FeederConnectionState.CONNECTED) {
       this.putFeeder(feederSocket);
     } else {
       // Runモードのフィーダー選択モードなら、選択したフィーダーを通知
@@ -705,7 +705,7 @@ export class LayoutEditor {
     }
 
     let feederSocket = this.layoutManager.getFeederSocket(event.point);
-    if (feederSocket && feederSocket.feederState !== FeederState.CONNECTED) {
+    if (feederSocket && feederSocket.connectionState !== FeederConnectionState.CONNECTED) {
       feederSocket.toggleDirection();
       feederSocket.disconnect();
       this.showFeederToPut(feederSocket);
@@ -720,6 +720,12 @@ export class LayoutEditor {
     log.info("down point: ", event.downPoint);
     log.info("event point: ", event.point);
     log.info("delta ", event.delta);
+  }
+
+  startSimulation() {
+    this.layoutSimulator.init(this.layoutManager.rails, this.layoutManager.feederSockets, this.layoutManager.gapSockets);
+    this.layoutSimulator.resetFlowSimulation();
+    this.layoutSimulator.simulateAllFeeders();
   }
 
 

@@ -16,7 +16,7 @@
           <input type="checkbox" v-model="powerPack.direction">
         </div>
         <div class="col-md-9">
-          <b-form-slider :min="1" :max="255" v-model="powerPack.power"></b-form-slider>
+          <b-form-slider :min="0" :max="255" v-model="powerPack.power"></b-form-slider>
         </div>
       </div>
       <div class="row" v-for="feeder in powerPack.feeders">
@@ -42,7 +42,7 @@
   import paper, {Point} from "paper"
   import {FeederData} from "../lib/LayoutManager";
   import {FeederStoreState} from "../lib/LayoutEditorStoreProxy";
-  import {FeederSocket, FlowDirection} from "../lib/rails/parts/FeederSocket";
+  import {FeederSocket, FeederDirection} from "../lib/rails/parts/FeederSocket";
   import {PowerPackState} from "../store/state";
 
   @Component

@@ -3,7 +3,7 @@
  */
 import {Joint, JointState} from "./rails/parts/Joint";
 import {Rail} from "./rails/Rail";
-import {FeederSocket, FlowDirection} from "./rails/parts/FeederSocket";
+import {FeederSocket, FeederDirection} from "./rails/parts/FeederSocket";
 import { cloneRail, serialize, deserialize } from "./RailUtil";
 import {hitTest, hitTestAll} from "./utils";
 import logger from "../logging";
@@ -28,7 +28,7 @@ export interface RailData {
 
 export interface FeederData {
     name: string,
-    direction: FlowDirection
+    direction: FeederDirection
 }
 
 export interface GapData {
@@ -118,7 +118,7 @@ export class LayoutManager {
             layoutData.feeders.forEach( entry => {
                 let feederSocket = this.allFeederSockets.find(fs => fs.name === entry.name);
                 feederSocket.enabled = true;
-                feederSocket.flowDirection = entry.direction;
+                feederSocket.direction = entry.direction;
                 feederSocket.connect();
                 this.feederSockets.push(feederSocket);
             })
@@ -150,7 +150,7 @@ export class LayoutManager {
             feeders: this.feederSockets.map(feeder => {
                 return {
                     name: feeder.name,
-                    direction: feeder.flowDirection
+                    direction: feeder.direction
                 }
             }),
             gaps: this.gapSockets.map(gap => {

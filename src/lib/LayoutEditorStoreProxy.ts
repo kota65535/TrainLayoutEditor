@@ -1,7 +1,7 @@
 /**
  * Created by tozawa on 2017/07/12.
  */
-import {FeederSocket, FeederState, FlowDirection} from "./rails/parts/FeederSocket";
+import {FeederSocket, FeederConnectionState, FeederDirection} from "./rails/parts/FeederSocket";
 import {Rail} from "./rails/Rail";
 import logger from "../logging";
 import {GapSocket, GapState} from "./rails/parts/GapSocket";
@@ -20,7 +20,7 @@ export interface RailStoreState {
 export interface FeederStoreState {
   name: string
   power: number
-  direction: FlowDirection
+  direction: FeederDirection
 }
 
 
@@ -47,7 +47,7 @@ export class LayoutEditorStoreProxy {
         name: f.name,
         // TODO: set power
         power: 0,
-        direction: f.flowDirection
+        direction: f.direction
       } as FeederStoreState
     }))
   }
@@ -57,7 +57,7 @@ export class LayoutEditorStoreProxy {
       name: feeder.name,
       // TODO: set power
       power: 0,
-      direction: feeder.flowDirection
+      direction: feeder.direction
     } as FeederStoreState)
   }
 

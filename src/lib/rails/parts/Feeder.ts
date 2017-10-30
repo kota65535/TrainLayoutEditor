@@ -3,7 +3,7 @@
  */
 
 import {TrianglePart} from "./primitives/TrianglePart";
-import {FeederSocket, FeederState} from "./FeederSocket";
+import {FeederSocket, FeederConnectionState} from "./FeederSocket";
 import logger from "../../../logging";
 let log = logger("Feeder");
 
@@ -25,7 +25,7 @@ export class Feeder extends TrianglePart {
         log.debug(`Feeder @${this.feederSocket ? this.feederSocket.name : null}: visible=${this.visible}`);
     }
 
-    set state(state: FeederState) {
+    set state(state: FeederConnectionState) {
         // フィーダーソケットの色に合わせるだけ
         this.path.fillColor = this.feederSocket.fillColors[state];
     }
@@ -46,6 +46,6 @@ export class Feeder extends TrianglePart {
 
         // 有効化
         this.visible = true;
-        this.state = feederSocket.feederState;
+        this.state = feederSocket.connectionState;
     }
 }

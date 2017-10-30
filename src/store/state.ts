@@ -1,7 +1,7 @@
 import {LayoutData} from "../lib/LayoutManager";
 import {PaletteItem, BuilderPaletteData, EditorMode} from "../lib/PaletteItem";
 import {FeederStoreState, RailStoreState} from "../lib/LayoutEditorStoreProxy";
-import {FeederSocket, FlowDirection} from "../lib/rails/parts/FeederSocket";
+import {FeederSocket, FeederDirection} from "../lib/rails/parts/FeederSocket";
 
 export interface State {
   paletteItemId: string|null
@@ -42,6 +42,6 @@ export interface PowerPackState {
   id: number
   name: string
   power: number
-  direction: FlowDirection
+  direction: FeederDirection
   feeders: FeederStoreState[]
 }

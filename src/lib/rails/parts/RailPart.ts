@@ -2,7 +2,7 @@
  * Created by tozawa on 2017/07/03.
  */
 import {sprintf} from "sprintf-js";
-import {FeederSocket, FlowDirection} from "./FeederSocket";
+import {FeederSocket, FeederDirection} from "./FeederSocket";
 import logger from "../../../logging";
 import {IGradientColor, Path, Point} from "paper";
 import {PartBase} from "./primitives/PartBase";
@@ -39,7 +39,7 @@ export class RailPart extends PartBase {
     _hasFeederSocket: boolean;
     _isSimulated: boolean;
 
-    _flowDirection: FlowDirection;  // 電流方向
+    _flowDirection: FeederDirection;  // 電流方向
 
     _rail: Rail;
 
@@ -85,7 +85,7 @@ export class RailPart extends PartBase {
     set endAngle(angle: number) { this._endAngle = angle };
 
     get flowDirection() { return this._flowDirection; }
-    set flowDirection(flowDirection: FlowDirection) { this._flowDirection = flowDirection; }
+    set flowDirection(flowDirection: FeederDirection) { this._flowDirection = flowDirection; }
 
     /**
      * レールオブジェクトへの参照
@@ -107,7 +107,7 @@ export class RailPart extends PartBase {
 
         this._hasFeederSocket = hasFeederSocket;
         this._isSimulated = false;
-        this._flowDirection = FlowDirection.NONE;
+        this._flowDirection = FeederDirection.NONE;
         this.joints = [];
         this.feederSocket = null;
     }
@@ -162,21 +162,21 @@ export class RailPart extends PartBase {
         let currentDestination: Point;
 
         switch (this.flowDirection) {
-            case FlowDirection.NONE:
+            case FeederDirection.NONE:
                 // アニメーションしない
                 this.path.fillColor = "black";
                 return;
-            case FlowDirection.START_TO_END:
+            case FeederDirection.START_TO_END:
                 currentOrigin = this.startPoint.multiply(2 - ratio).add(this.endPoint.multiply(ratio - 1));
                 currentDestination = currentOrigin.add(this.endPoint.subtract(this.startPoint).multiply(2));
                 // log.debug("S to E : ", currentOrigin, "=>", currentDestination);
                 break;
-            case FlowDirection.END_TO_START:
+            case FeederDirection.END_TO_START:
                 currentOrigin = this.startPoint.multiply(ratio + 1).add(this.endPoint.multiply(-ratio));
                 currentDestination = currentOrigin.add(this.endPoint.subtract(this.startPoint).multiply(2));
                 // log.debug("E to S : ", currentOrigin, "=>", currentDestination);
                 break;
-            case FlowDirection.ILLEGAL:
+            case FeederDirection.ILLEGAL:
                 this.path.fillColor = "red";
                 return;
         }

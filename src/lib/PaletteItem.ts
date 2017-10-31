@@ -1,14 +1,14 @@
 /**
  * Created by tozawa on 2017/07/03.
  */
-import {PowerPackState} from "../store/state";
+import {PowerPackState, SwitcherState} from "../store/state";
 import {FeederStoreState} from "./rails/parts/FeederSocket";
 
 export interface RunnerPaletteData {
   turnouts: any[]
   feeders: FeederStoreState[]
   powerPacks: PowerPackState[]
-  // turnoutData: Turnout[]
+  switchers: SwitcherState[]
 }
 
 
@@ -25,7 +25,8 @@ export enum EditorMode {
   RAIL,
   FEEDER,
   GAP_JOINER,
-  FEEDER_SELECTING
+  FEEDER_SELECTING,
+  TURNOUT_SELECTING
 }
 
 export interface PaletteItem {

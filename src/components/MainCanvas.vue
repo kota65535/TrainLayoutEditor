@@ -57,7 +57,7 @@
     @Watch('editorMode')
     onSetEditorMode (editorMode: EditorMode) {
       this.editor.changeMode(this.editorMode)
-      if (editorMode === EditorMode.FEEDER_SELECTING) {
+      if ([EditorMode.TURNOUT_SELECTING, EditorMode.FEEDER_SELECTING].includes(this.editor.mode)) {
         this.shouldDarken = true
       } else {
         this.shouldDarken = false

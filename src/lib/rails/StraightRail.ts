@@ -78,7 +78,7 @@ export class GappedStraightRail extends Rail {
 
         this.length = length;
 
-        this.conductionMap = [
+        this.conductionTable = [
           []
         ]
 

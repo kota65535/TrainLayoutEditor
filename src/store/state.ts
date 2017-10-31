@@ -16,15 +16,19 @@ export interface State {
   railAngle: number
   builderPaletteData: BuilderPaletteData
 
-  rails: RailStoreState[];          // レイアウトを構成するレールのID
+  rails: RailStoreState[];            // レイアウトを構成するレールのID
   feederSockets: FeederStoreState[];  // フィーダーがささっている差込口のID
-  gapSockets: string[];     // ギャップがささっている差込口
+  gapSockets: string[];               // ギャップがささっている差込口
   powerPacks: PowerPackState[]
 
   selectedFeederSocket: FeederStoreState
+  selectedTurnout: RailStoreState
   currentPowerPack: PowerPackState
 
   flowDirectionTable: FlowDirectionTable
+
+  switchers: SwitcherState[]
+  currentSwitcher: string
 }
 
 
@@ -40,11 +44,18 @@ export interface AuthContext {
   accessToken: string
 }
 
-
 export interface PowerPackState {
   id: number
   name: string
   power: number
   direction: boolean
   feeders: FeederStoreState[]
+}
+
+export interface SwitcherState {
+  id: number
+  name: string
+  state: number
+  stateMap: Array<Array<number>>
+  turnouts: RailStoreState[]
 }

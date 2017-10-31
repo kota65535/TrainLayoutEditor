@@ -1,15 +1,14 @@
 <template>
   <section>
-    Turnouts
-    <section v-for="turnout in getRunnerPaletteData.turnouts">
-      <span class="sidebar-nav">{{ turnout.name }}</span>
-      <b-form-radio-group @change="onDirectionChanged($event, turnout.name)"
-                          :options="turnout.options"
-                          :name="`${turnout.name}-conduction`"
-                          :checked="turnout.conductionState"
-      >
-      </b-form-radio-group>
-    </section>
+    <b-row>
+      <b-col cols=9>
+        <h4>Switches</h4>
+      </b-col>
+      <b-col cols=3>
+        <b-button size="sm" @click="onCreateSwitcher">+</b-button>
+      </b-col>
+    </b-row>
+    <runner-palette-switcher v-for="switcher in getRunnerPaletteData.switchers" :switcher="switcher"></runner-palette-switcher>
   </section>
 </template>
 
@@ -25,20 +24,26 @@
   import {FeederData} from "../lib/LayoutManager";
   import {FeederDirection} from "../lib/rails/parts/FeederSocket";
   import {RailStoreState} from "../lib/rails/Rail";
+  import {SwitcherState} from "../store/state";
+  import RunnerPaletteSwitcher from "./RunnerPaletteSwitcher"
 
-  @Component
+  @Component({
+    components: {
+      RunnerPaletteSwitcher
+    }
+  })
   export default class RunnerPaletteTurnoutSection extends Vue {
     @Getter
     getRunnerPaletteData: RunnerPaletteData
 
-    @Model('changed')
-    selected: string
-
-    onDirectionChanged (value: number, name: string) {
-      this.$store.commit('SET_TURNOUT_DIRECTION', {
-        name: name,
-        conductionState: value
-      } as RailStoreState)
+    onCreateSwitcher (e: Event) {
+      let defaultName = `Switcher ${this.getRunnerPaletteData.switchers.length + 1}`
+      this.$store.commit('addSwitcher', {
+        name: defaultName,
+        state: 0,
+        stateMap: [[]],
+        turnouts: []
+      } as SwitcherState)
     }
   }
 </script>

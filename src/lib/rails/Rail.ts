@@ -4,7 +4,6 @@
 import {sprintf} from "sprintf-js";
 import { Joint, JointDirection } from "./parts/Joint";
 import { FeederSocket } from "./parts/FeederSocket";
-import { EditorMode } from "../PaletteItem";
 import logger from "../../logging";
 import {Group, Point} from "paper";
 import {RailPart} from "./parts/RailPart";
@@ -16,7 +15,7 @@ const log = logger("Rail");
 export interface RailStoreState {
   name: string
   conductionState: number
-  conductionStateSize: number
+  conductionTable: Array<Array<number>>
 }
 
 /**
@@ -42,7 +41,7 @@ export class Rail implements Storable<RailStoreState> {
 
   // どのレールパーツに電気が流れるかを表す導電状態マップ。
   // 状態ID: 導電しているRailPartのIndexのArray
-  conductionMap: Array<Array<number>> = [
+  conductionTable: Array<Array<number>> = [
     [0]
   ]
   // 現在の導電状態
@@ -67,7 +66,7 @@ export class Rail implements Storable<RailStoreState> {
     return {
       name: this.name,
       conductionState: this.conductionState,
-      conductionStateSize: this.conductionMap.length
+      conductionTable: this.conductionTable
     }
   }
 
@@ -292,7 +291,7 @@ export class Rail implements Storable<RailStoreState> {
    * 導電状態をトグルスイッチ的に変更する。
    */
   toggleSwitch() {
-    let numStates = Object.keys(this.conductionMap).length;
+    let numStates = Object.keys(this.conductionTable).length;
     this.conductionState = (this.conductionState + 1) % numStates;
     this.switch(this.conductionState);
   }
@@ -302,7 +301,7 @@ export class Rail implements Storable<RailStoreState> {
    * @param state
    */
   switch(state) {
-    let numStates = Object.keys(this.conductionMap).length;
+    let numStates = Object.keys(this.conductionTable).length;
     if (state > numStates) {
       log.error("No conduction state", state);
       return;
@@ -330,7 +329,7 @@ export class Rail implements Storable<RailStoreState> {
    * @returns {Array<RailPart>}
    */
   getConductiveRailParts(): RailPart[] {
-    return this.conductionMap[this.conductionState].map( index => this.railParts[index])
+    return this.conductionTable[this.conductionState].map(index => this.railParts[index])
   }
 
   /**

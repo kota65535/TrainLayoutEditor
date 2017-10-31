@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
-import {FileInfo, PowerPackState, State} from "./state";
+import {FileInfo, PowerPackState, State, SwitcherState} from "./state";
 import {MutationTree} from "vuex";
 import {EditorMode, PaletteItem} from "../lib/PaletteItem";
 import {RailStoreState} from "../lib/rails/Rail";
@@ -19,12 +19,6 @@ export default ({
   },
   [types.SET_FEEDER](state: State, feederSockets: FeederStoreState[]) {
     state.feederSockets = feederSockets
-  },
-  [types.SELECT_FEEDER](state: State, feederSocket: FeederStoreState) {
-    state.selectedFeederSocket = feederSocket
-  },
-  [types.SET_CURRENT_POWER_PACK](state: State, powerPack: PowerPackState) {
-    state.currentPowerPack = powerPack
   },
   [types.SET_TURNOUT_DIRECTION](state: State, payload: RailStoreState) {
     let index = state.rails.findIndex(e => e.name === payload.name)
@@ -50,12 +44,17 @@ export default ({
   [types.SET_RAIL_ANGLE](state: State, value: number) {
     state.railAngle = value
   },
+
   addPowerPack (state: State, powerPack: PowerPackState) {
     state.powerPacks.push(powerPack)
   },
 
-  setEditorMode(state: State, mode: EditorMode) {
-    state.editorMode = mode
+  [types.SET_CURRENT_POWER_PACK](state: State, powerPack: PowerPackState) {
+    state.currentPowerPack = powerPack
+  },
+
+  [types.SELECT_FEEDER](state: State, feederSocket: FeederStoreState) {
+    state.selectedFeederSocket = feederSocket
   },
 
   updatePowerPack(state: State, powerPack: PowerPackState) {
@@ -72,6 +71,38 @@ export default ({
       }
     })
   },
+
+  setEditorMode(state: State, mode: EditorMode) {
+    state.editorMode = mode
+  },
+
+  addSwitcher (state: State, switcher: SwitcherState) {
+    state.switchers.push(switcher)
+  },
+
+  setCurrentSwitcher(state: State, name: string) {
+    state.currentSwitcher = name
+  },
+
+  selectTurnout(state: State, rail: RailStoreState) {
+    state.selectedTurnout = rail
+  },
+
+  updateSwitcher(state: State, switcher: SwitcherState) {
+    let index = state.switchers.findIndex(e => e.name === switcher.name)
+    if (index < 0) {
+      throw new Error(`PowerPack named ${switcher.name} not found.`)
+    }
+    Vue.set(state.switchers, index, switcher)
+
+    switcher.turnouts.forEach(turnout => {
+      let index = state.rails.findIndex(e => e.name === turnout.name)
+      if (index >= 0) {
+        Vue.set(state.rails, index, turnout)
+      }
+    })
+  },
+
   setFlowDirectionTable(state: State, table: FlowDirectionTable) {
     state.flowDirectionTable = table
   }

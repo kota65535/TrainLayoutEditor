@@ -74,7 +74,7 @@ export class LayoutEditor {
   //====================
 
   isRailMode(): boolean {
-    return this.mode === EditorMode.RAIL
+    return this.mode === EditorMode.RAIL || this.mode === EditorMode.TURNOUT_SELECTING
   }
 
   isFeederMode(): boolean {
@@ -87,6 +87,37 @@ export class LayoutEditor {
 
   isFeederSelectingMode(): boolean {
     return this.mode === EditorMode.FEEDER_SELECTING
+  }
+
+  isTurnoutSelectingMode(): boolean {
+    return this.mode === EditorMode.TURNOUT_SELECTING
+  }
+
+  /**
+   * エディタのモードを切り替える。
+   * @param {EditorMode} mode
+   */
+  changeMode(mode: EditorMode) {
+    // もし現在のアイテムと異なる種類ならば、全ての選択状態を解除する
+    if (this.mode !== mode) {
+      project.deselectAll();
+    }
+    switch (mode) {
+      case EditorMode.RAIL:
+      case EditorMode.TURNOUT_SELECTING:
+        this.changeToRailMode();
+        this.mode = mode
+        break;
+      case EditorMode.FEEDER:
+      case EditorMode.FEEDER_SELECTING:
+        this.changeToFeederMode();
+        this.mode = mode
+        break;
+      case EditorMode.GAP_JOINER:
+        this.changeToGapJoinerMode();
+        this.mode = mode
+        break;
+    }
   }
 
   /**
@@ -150,31 +181,6 @@ export class LayoutEditor {
     log.info("Changed to gap mode.");
   }
 
-  /**
-   * エディタのモードを切り替える。
-   * @param {EditorMode} mode
-   */
-  changeMode(mode: EditorMode) {
-    // もし現在のアイテムと異なる種類ならば、全ての選択状態を解除する
-    if (this.mode !== mode) {
-      project.deselectAll();
-    }
-    switch (mode) {
-      case EditorMode.RAIL:
-        this.changeToRailMode();
-        this.mode = mode
-        break;
-      case EditorMode.FEEDER:
-      case EditorMode.FEEDER_SELECTING:
-        this.changeToFeederMode();
-        this.mode = mode
-        break;
-      case EditorMode.GAP_JOINER:
-        this.changeToGapJoinerMode();
-        this.mode = mode
-        break;
-    }
-  }
 
   //====================
   // レイアウトの保存・読込
@@ -608,6 +614,10 @@ export class LayoutEditor {
     if (this.isFeederSelectingMode()) {
       this.storeProxy.commitSetEditorMode(EditorMode.FEEDER)
     }
+    // ポイント選択モードは左クリック後にレールモードに移る
+    if (this.isTurnoutSelectingMode()) {
+      this.storeProxy.commitSetEditorMode(EditorMode.RAIL)
+    }
   }
 
   /**
@@ -640,6 +650,9 @@ export class LayoutEditor {
     // レールの選択状態をトグルする
     railPart.path.selected = !railPart.path.selected;
     // event.item.selected = !event.item.selected; // 選択を反転
+    if (this.isTurnoutSelectingMode()) {
+      this.storeProxy.commitTurnoutSelected(railPart.rail)
+    }
     return;
   }
 

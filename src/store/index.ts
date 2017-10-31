@@ -25,20 +25,29 @@ const state: State = {
     feeders: [],
     gaps: []
   },
-  currentPalette: "builder-palette",
   permitRailIntersection: undefined,
-  railAngle: 0,
-  builderPaletteData: INITIAL_BUILDER_PALETTE_DATA,
 
+  // Tool Bar
+  railAngle: 0,
+
+  // Palette
+  currentPalette: "builder-palette",
   rails: [],
   feederSockets: [],
   gapSockets: [],
 
+  // Builder Palette
+  builderPaletteData: INITIAL_BUILDER_PALETTE_DATA,
+
+  // Runner Palette
   powerPacks: [],
   selectedFeederSocket: null,
   currentPowerPack: null,
+  switchers: [],
+  selectedTurnout: null,
+  currentSwitcher: null,
 
-  flowDirectionTable: null
+  flowDirectionTable: null,
 }
 
 export default new Vuex.Store<State>({

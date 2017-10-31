@@ -1,7 +1,6 @@
 import {GetterTree} from "vuex";
 import {State} from "./state";
 import {BuilderPaletteData, RunnerPaletteData} from "../lib/PaletteItem";
-import * as _ from 'lodash'
 
 export const getBuilderPaletteData = (state: State): BuilderPaletteData => {
   return state.builderPaletteData
@@ -10,11 +9,11 @@ export const getBuilderPaletteData = (state: State): BuilderPaletteData => {
 export const getRunnerPaletteData =  (state: State): RunnerPaletteData => {
   return {
     feeders: state.feederSockets,
-    turnouts: state.rails.filter(r => r.conductionStateSize > 1).map(t => {
+    turnouts: state.rails.filter(r => r.conductionTable.length > 1).map(t => {
       return {
         name: t.name,
         conductionState: t.conductionState,
-        options: _.range(t.conductionStateSize).map(ind => {
+        options: (t.conductionTable).map(ind => {
           return {
             text: `${ind}`,
             value: ind
@@ -22,12 +21,13 @@ export const getRunnerPaletteData =  (state: State): RunnerPaletteData => {
         })
       }
     }),
-    powerPacks: state.powerPacks
+    powerPacks: state.powerPacks,
+    switchers: state.switchers
   }
 }
 
 
-  export default ({
+export default ({
   getBuilderPaletteData,
   getRunnerPaletteData
 }) as GetterTree<State, any>

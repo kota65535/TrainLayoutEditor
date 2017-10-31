@@ -32,6 +32,10 @@ export class LayoutEditorStoreProxy {
     this.store.commit('SELECT_FEEDER', feeder.storeState)
   }
 
+  commitTurnoutSelected (rail: Rail) {
+    this.store.commit('selectTurnout', rail.storeState)
+  }
+
   commitSetEditorMode (mode: EditorMode) {
     this.store.commit('setEditorMode', mode)
   }

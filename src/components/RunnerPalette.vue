@@ -13,7 +13,7 @@
   import {Prop} from 'vue-property-decorator'
   import {Getter} from 'vuex-class'
   import RunnerPalettePowerPackSection from './RunnerPalettePowerPackSection'
-  import RunnerPaletteTurnoutSection from './RunnerPaletteTurnoutSection'
+  import RunnerPaletteTurnoutSection from './RunnerPaletteSwitcherSection'
   import {PaletteItem} from '../lib/PaletteItem'
   import logger from '../logging'
 

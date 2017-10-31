@@ -55,7 +55,7 @@ export interface PowerPackState {
 export interface SwitcherState {
   id: number
   name: string
-  state: number
+  direction: number
   stateMap: Array<Array<number>>
   turnouts: RailStoreState[]
 }

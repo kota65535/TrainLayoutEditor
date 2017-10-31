@@ -36,8 +36,10 @@
     getRunnerPaletteData: RunnerPaletteData
 
     onCreatePowerPack (e: Event) {
-      let defaultName = `PowerPack ${this.getRunnerPaletteData.powerPacks.length + 1}`
+      let id = this.getRunnerPaletteData.switchers.length + 1
+      let defaultName = `PowerPack ${id}`
       this.$store.commit('addPowerPack', {
+        id: id,
         name: defaultName,
         power: 0,
         direction: true,

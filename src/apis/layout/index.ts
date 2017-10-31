@@ -48,8 +48,18 @@ export class LayoutAPI {
     })
   }
 
-  setTurnoutDirection(userId: number, turnoutId: number, direction: number) {
-    fetch2(`${this.endpoint}/users/${userId}/turnouts/${turnoutId}`, {
+  addSwitcher(userId: number, switcherId: number) {
+    fetch2(`${this.endpoint}/users/${userId}/switchers/${switcherId}`, {
+      method: 'POST',
+    }).then(res => {
+      console.log(res)
+    }).catch(res => {
+      console.log(res)
+    })
+  }
+
+  setSwitcherDirection(userId: number, switcherId: number, direction: number) {
+    fetch2(`${this.endpoint}/users/${userId}/switchers/${switcherId}`, {
       method: 'PUT',
       body: { direction: direction }
     }).then(res => {

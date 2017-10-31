@@ -37,10 +37,12 @@
     getRunnerPaletteData: RunnerPaletteData
 
     onCreateSwitcher (e: Event) {
-      let defaultName = `Switcher ${this.getRunnerPaletteData.switchers.length + 1}`
+      let id = this.getRunnerPaletteData.switchers.length + 1
+      let defaultName = `Switcher ${id}`
       this.$store.commit('addSwitcher', {
+        id: id,
         name: defaultName,
-        state: 0,
+        direction: 0,
         stateMap: [[]],
         turnouts: []
       } as SwitcherState)

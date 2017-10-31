@@ -20,8 +20,8 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-form-radio-group v-model="state" stacked>
-            <b-form-radio v-for="(cond, i) in turnout.conductionTable" :value="i">{{ cond }}</b-form-radio>
+          <b-form-radio-group v-model="direction" stacked>
+            <b-form-radio v-for="(cond, i) in turnout.conductionTable" :value="i.toString()">{{ cond }}</b-form-radio>
           </b-form-radio-group>
         </b-row>
       </div>
@@ -56,17 +56,27 @@
     @State
     currentSwitcher: string
 
+    direction: string = '0'
+
     /**
      * スイッチにポイントを追加
      */
     @Watch('selectedTurnout')
-    onFeederSelected (selectedFeederSocket: FeederStoreState) {
+    onFeederSelected (selectedTurnout: RailStoreState) {
       // Addボタンを押したのがこのパワーパックで、かつ選択されたフィーダーが未登録の場合
       if (this.switcher.name === this.currentSwitcher) {
         let switcher = clone(this.switcher)
-        switcher.turnouts.push(this.selectedTurnout)
+        switcher.turnouts.push(selectedTurnout)
         this.$store.commit('updateSwitcher', switcher)
       }
+    }
+
+    @Watch('direction')
+    onStateChanged (direction: string) {
+      let switcher = clone(this.switcher)
+      switcher.direction = parseInt(direction)
+      switcher.turnouts.forEach(t => t.conductionState = switcher.direction)
+      this.$store.dispatch('setSwitcherDirection', switcher)
     }
 
     onAddTurnout () {

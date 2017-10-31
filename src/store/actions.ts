@@ -1,6 +1,6 @@
 import * as types from './mutation-types'
 import {ActionTree} from "vuex";
-import {PowerPackState, State} from "./state";
+import {PowerPackState, State, SwitcherState} from "./state";
 import {PaletteItem} from "../lib/PaletteItem";
 import LayoutAPI from "../apis/layout";
 import GoogleAPI from "../apis/google";
@@ -64,5 +64,27 @@ export default {
   setPowerPackDirection ({ commit }, state: PowerPackState) {
     LayoutAPI.setPowerPackDirection(GoogleAPI.getCurrentUser(), state.id, state.power)
     commit('updatePowerPack', state)
+  },
+
+  /**
+   * スイッチを追加する。
+   * @param {any} commit
+   * @param {SwitcherState} state
+   */
+  addSwitcher ( { commit }, state: SwitcherState) {
+    LayoutAPI.addSwitcher(GoogleAPI.getCurrentUser(), state.id)
+    commit('addSwitcher', state)
+  },
+
+  /**
+   * スイッチの方向を更新する。
+   * @param {any} commit
+   * @param {SwitcherState} state
+   */
+  setSwitcherDirection({ commit }, state: SwitcherState) {
+    LayoutAPI.setSwitcherDirection(GoogleAPI.getCurrentUser(), state.id, state.direction)
+    commit('updateSwitcher', state)
   }
+
+
 } as ActionTree<State, any>

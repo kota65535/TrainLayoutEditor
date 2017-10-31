@@ -91,6 +91,7 @@
       for (let i=0 ; i < this.rails.length ; ++i) {
         this.editor.layoutManager.rails[i].storeState = this.rails[i]
       }
+      this.editor.startSimulation()
     }
 
     @Watch('feederSockets')

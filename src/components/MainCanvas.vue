@@ -1,8 +1,6 @@
 <template>
   <div class="main-canvas">
-    <div class="container" id="editor-content-wrapper">
-      <canvas id="editor-canvas" :class="{ darken: shouldDarken }" resize></canvas>
-    </div>
+    <canvas id="editor-canvas" :class="{ darken: shouldDarken }" resize></canvas>
   </div>
 </template>
 
@@ -167,17 +165,19 @@
   }
 </script>
 
-<style lang="scss">
-  #editor-content-wrapper{
+<style lang="scss" scoped>
+  @import "../css/app.scss";
+
+  .main-canvas {
     position: fixed;
-    top: 50px;                  /* height of toolbar */
-    left: 240px;                /* width of palette */
+    left: $palette-width;
     max-width: 3000px;
     width: calc(100% - 240px);
     height: calc(100% - 50px);
-    z-index: 9900;              /* behind of palette */
+    z-index: $canvas-z-index;
     overflow: auto;
   }
+
   canvas[resize] {
     width: 100%;
     height: 100%;

@@ -148,7 +148,4 @@
 <style type="scss">
   @import "../css/app.scss";
 
-  .form1 {
-    margin-top: 100px;
-  }
 </style>

@@ -49,58 +49,8 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   [class*="col-"] {
     border: 1px solid #ddd;
   }
-
-  /*.sidebar-nav {*/
-  /*position: absolute;*/
-  /*top: 0;*/
-  /*width: 250px;*/
-  /*margin: 0;*/
-  /*padding: 0;*/
-  /*list-style: none;*/
-  /*}*/
-
-  /*.sidebar-nav > .sidebar-brand {*/
-  /*height: 65px;*/
-  /*font-size: 18px;*/
-  /*line-height: 60px;*/
-  /*}*/
-
-  .sidebar-nav > .sidebar-brand a {
-    color: #999999;
-  }
-
-  .sidebar-nav > .sidebar-brand a:hover {
-    color: #fff;
-    background: none;
-  }
-
-  .palette-item {
-    height: 125px;
-    /*line-height: 125px;*/
-    background: #eee;
-    padding: 10px;
-    /*text-align: center;*/
-  }
-
-  .palette-item button {
-    height: 100%;
-  }
-
-  .button-canvas {
-    height: 100%;
-    width: 100%;
-    /*height: 100px;*/
-    /*width: 100px;*/
-  }
-
-
-  /*.palette-item-text {*/
-  /*display: inline-block;*/
-  /*vertical-align: middle;*/
-  /*line-height: normal;*/
-  /*}*/
 </style>

@@ -60,25 +60,13 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import "../css/app.scss";
+
+  /* for debug */
   [class*="col-"] {
     border: 1px solid #ddd;
   }
-
-  /*.sidebar-nav {*/
-  /*position: absolute;*/
-  /*top: 0;*/
-  /*width: 250px;*/
-  /*margin: 0;*/
-  /*padding: 0;*/
-  /*list-style: none;*/
-  /*}*/
-
-  /*.sidebar-nav > .sidebar-brand {*/
-  /*height: 65px;*/
-  /*font-size: 18px;*/
-  /*line-height: 60px;*/
-  /*}*/
 
   .sidebar-nav > .sidebar-brand a {
     color: #999999;
@@ -90,11 +78,9 @@
   }
 
   .palette-item {
-    height: 125px;
-    /*line-height: 125px;*/
+    height: $palette-width / 2;
     background: #eee;
     padding: 10px;
-    /*text-align: center;*/
   }
 
   .palette-item button {
@@ -104,14 +90,5 @@
   .button-canvas {
     height: 100%;
     width: 100%;
-    /*height: 100px;*/
-    /*width: 100px;*/
   }
-
-
-  /*.palette-item-text {*/
-  /*display: inline-block;*/
-  /*vertical-align: middle;*/
-  /*line-height: normal;*/
-  /*}*/
 </style>

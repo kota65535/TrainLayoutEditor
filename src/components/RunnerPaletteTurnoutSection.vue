@@ -43,7 +43,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   [class*="col-"] {
     border: 1px solid #ddd;
   }

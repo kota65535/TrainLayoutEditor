@@ -79,3 +79,6 @@ export class RailFactory {
     // }
 }
 
+
+export default new RailFactory()
+

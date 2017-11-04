@@ -85,7 +85,7 @@ export default ({
   },
 
   selectTurnout(state: State, rail: RailStoreState) {
-    state.selectedTurnout = rail
+    state.selectedRailName = rail.name
   },
 
   updateSwitcher(state: State, switcher: SwitcherState) {
@@ -101,6 +101,13 @@ export default ({
         Vue.set(state.rails, index, turnout)
       }
     })
+  },
+
+  updateRail(state: State, rail: RailStoreState) {
+    let index = state.rails.findIndex(r => r.name === rail.name)
+    if (index >= 0) {
+      Vue.set(state.rails, index, rail)
+    }
   },
 
   setFlowDirectionTable(state: State, table: FlowDirectionTable) {

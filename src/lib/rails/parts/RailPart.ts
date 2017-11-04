@@ -177,8 +177,9 @@ export class RailPart extends PartBase {
 
     switch (this.flowDirection) {
       case FlowDirection.NONE:
-        // アニメーションしない
+        // アニメーションしない場合はレール内の最後尾に移動
         this.path.fillColor = "black";
+        this.path.sendToBack()
         return;
       case FlowDirection.START_TO_END:
         currentOrigin = this.startPoint.multiply(2 - ratio).add(this.endPoint.multiply(ratio - 1));

@@ -75,6 +75,7 @@ export class Rail implements Storable<RailStoreState> {
       throw new Error('Rail name does not match')
     }
     this.conductionState = state.conductionState
+    this.conductionTable = state.conductionTable
   }
 
 
@@ -110,7 +111,7 @@ export class Rail implements Storable<RailStoreState> {
    */
   private _addRailPart(railPart: RailPart, index: number) {
     // レールパーツは最も下に描画
-    // this.pathGroup.insertChild(0, railPart.path);
+    this.pathGroup.insertChild(0, railPart.path);
 
     // 重複が無いか確認してからジョイントを追加する
     let startJoint = this._getJointAt(railPart.startPoint);
@@ -128,6 +129,10 @@ export class Rail implements Storable<RailStoreState> {
     }
     railPart.joints.push(endJoint);
 
+    // レールパーツの上に描画
+    this.pathGroup.addChild(startJoint.basePart.path)
+    this.pathGroup.addChild(endJoint.basePart.path)
+
     // 各レールパーツにフィーダーソケットの追加
     // FIXME: 多分これだとレールパーツが複数で一部がフィーダーソケットを持たないときにバグる
     if (railPart.hasFeederSocket()) {
@@ -135,6 +140,8 @@ export class Rail implements Storable<RailStoreState> {
       railPart.feederSocket = feederSocket;
       this.feederSockets.push(feederSocket);
     }
+
+    // TODO: フィーダーソケットはGroupに追加しなくてもいい？
 
     railPart.rail = this;
     this.railParts.push(railPart);
@@ -261,10 +268,11 @@ export class Rail implements Storable<RailStoreState> {
    * @param {number} value
    */
   setOpacity(value) {
-    this.railParts.forEach(elem => elem.opacity = value);
+    this.pathGroup.opacity = value
+    // this.railParts.forEach(elem => elem.opacity = value);
     this.joints.forEach(elem => elem.opacity = value);
-    this.feederSockets.forEach(elem => elem.opacity = value);
-    this.gapSockets.forEach(elem => elem.opacity = value);
+    // this.feederSockets.forEach(elem => elem.opacity = value);
+    // this.gapSockets.forEach(elem => elem.opacity = value);
   }
 
   /**
@@ -272,10 +280,11 @@ export class Rail implements Storable<RailStoreState> {
    * @param {boolean} isVisible
    */
   setVisible(isVisible) {
-    this.railParts.forEach(elem => elem.visible = isVisible);
+    this.pathGroup.visible = isVisible
+    // this.railParts.forEach(elem => elem.visible = isVisible);
     this.joints.forEach(elem => elem.visible = isVisible);
-    this.feederSockets.forEach(elem => elem.visible = isVisible);
-    this.gapSockets.forEach(elem => elem.visible = isVisible);
+    // this.feederSockets.forEach(elem => elem.visible = isVisible);
+    // this.gapSockets.forEach(elem => elem.visible = isVisible);
   }
 
   /**
@@ -349,7 +358,8 @@ export class Rail implements Storable<RailStoreState> {
    * @returns {Rectangle}
    */
   getBounds() {
-    return new Group(this.railParts.map(rp => rp.path)).bounds
+    // return new Group(this.railParts.map(rp => rp.path)).bounds
+    return this.pathGroup.bounds
   }
 
   /**
@@ -357,14 +367,8 @@ export class Rail implements Storable<RailStoreState> {
    * @param hor
    * @param ver
    */
-  scale(hor, ver) {
-    let group = new Group()
-    group.addChildren(this.railParts.map(rp => rp.path))
-    group.addChildren(this.joints.map(rp => rp.path))
-    group.scale(hor, ver)
-    // group.removeChildren()
-    // group.remove()
-    // this.railParts.forEach(rp => rp.scale(hor, ver));
+  scale(hor, ver, center) {
+    this.pathGroup.scale(hor, ver, center)
   }
 
   animate(event) {
@@ -416,5 +420,12 @@ export class Rail implements Storable<RailStoreState> {
     return point1.isClose(point2, Rail.JOINT_TO_RAIL_PART_TOLERANCE);
   }
 
+  public enableJoints() {
+    this.joints.forEach(j => j.enabled = true)
+  }
+
+  public disableJoints() {
+    this.joints.forEach(j => j.enabled = false)
+  }
 }
 

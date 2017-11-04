@@ -3,12 +3,7 @@
     <span class="sidebar-nav">{{ name }}</span>
     <b-row>
       <b-col cols=6 class="palette-item" v-for="item in items">
-        <button type="button" class="btn btn-primary btn-block" @click="onItemClicked(item)">
-          <div class="item-icon">
-            <canvas class="button-canvas" :ref="`${item.id}-canvas`" :id="`${item.id}-canvas`"></canvas>
-          </div>
-          <div class="item-title">{{ item.name }}</div>
-        </button>
+        <builder-palette-item :item="item"></builder-palette-item>
       </b-col>
     </b-row>
   </section>
@@ -23,8 +18,13 @@
   import logger from '../logging'
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
+  import BuilderPaletteItem from "./BuilderPaletteItem"
 
-  @Component
+  @Component({
+    components: {
+      BuilderPaletteItem
+    }
+  })
   export default class BuilderPaletteSection extends Vue {
     @Prop()
     name: string
@@ -33,30 +33,6 @@
 
     @State
     selectedItem: PaletteItem
-
-    mounted () {
-      let factory = new RailFactory();
-      // 各パレットアイテムのアイコン描画
-      this.items.forEach(item => {
-        let target = `${item.id}-canvas`
-        paper.setup(target);
-        let canvas = this.$refs[target][0]
-
-        switch (item.mode) {
-          case EditorMode.RAIL:
-            let rail = factory[item.id]();
-            let bounds = rail.getBounds();
-            let center = new Point((<any>canvas).clientWidth / 2, (<any>canvas).clientHeight / 2);
-            rail.move(center, bounds.center);
-            rail.scale(0.4, 0.4, center);
-            break;
-        }
-      });
-    }
-
-    onItemClicked (item: PaletteItem) {
-      this.$store.dispatch('setPaletteItem', item)
-    }
   }
 </script>
 

@@ -44,7 +44,7 @@ const state: State = {
   selectedFeederSocket: null,
   currentPowerPack: null,
   switchers: [],
-  selectedTurnout: null,
+  selectedRailName: null,
   currentSwitcher: null,
 
   flowDirectionTable: null,

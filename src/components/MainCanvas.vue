@@ -140,7 +140,8 @@
       };
 
       tool.onMouseDrag = (event) => {
-        this.grid.paperOnMouseDrag(event);
+        // FIXME:
+        // this.grid.paperOnMouseDrag(event);
       };
 
       paper.view.onFrame = (event) => {

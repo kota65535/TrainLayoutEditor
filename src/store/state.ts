@@ -22,7 +22,7 @@ export interface State {
   powerPacks: PowerPackState[]
 
   selectedFeederSocket: FeederStoreState
-  selectedTurnout: RailStoreState
+  selectedRailName: string
   currentPowerPack: PowerPackState
 
   flowDirectionTable: FlowDirectionTable

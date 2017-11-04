@@ -13,7 +13,7 @@ export const customMatchers: any = {
 
 const BOARD_WIDTH = 6000;     // ボード幅
 const BOARD_HEIGHT = 4000;    // ボード高さ
-const GRID_SIZE = 70;
+const GRID_SIZE = 100;
 const INITIAL_ZOOM = 0.7;
 const ZOOM_UNIT = 0.002;
 const AVAILABLE_ZOOM_MIN = 0.2;

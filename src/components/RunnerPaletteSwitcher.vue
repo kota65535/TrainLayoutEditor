@@ -26,6 +26,8 @@
         </b-row>
       </div>
     </div>
+
+    <switcher-connection-dialog ref="connectionDialog" :switcher="switcher" :turnout="selectedRail" @ok="onModalOK"></switcher-connection-dialog>
   </div>
 </template>
 
@@ -36,22 +38,27 @@
   import {State, Getter} from "vuex-class"
   import {PaletteItem, EditorMode} from '../lib/PaletteItem'
   import logger from '../logging'
-  import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
   import {FeederData} from "../lib/LayoutManager";
   import {FeederSocket, FeederDirection, FeederStoreState} from "../lib/rails/parts/FeederSocket";
   import {SwitcherState} from "../store/state";
   import clone from "clone"
   import {RailStoreState} from "../lib/rails/Rail";
+  import RailFactory from "src/lib/RailFactory"
+  import SwitcherConnectionDialog from "./SwitcherConnectionDialog"
 
-  @Component
+  @Component({
+    components: {
+      SwitcherConnectionDialog
+    }
+  })
   export default class RunnerPaletteSwitcher extends Vue {
 
     @Prop()
     switcher: SwitcherState
 
-    @State
-    selectedTurnout: RailStoreState
+    @Getter
+    selectedRail: RailStoreState
 
     @State
     currentSwitcher: string
@@ -59,18 +66,17 @@
     direction: string = '0'
 
     /**
-     * スイッチにポイントを追加
+     * レールが選択されたらダイアログを表示する
      */
-    @Watch('selectedTurnout')
-    onFeederSelected (selectedTurnout: RailStoreState) {
-      // Addボタンを押したのがこのパワーパックで、かつ選択されたフィーダーが未登録の場合
-      if (this.switcher.name === this.currentSwitcher) {
-        let switcher = clone(this.switcher)
-        switcher.turnouts.push(selectedTurnout)
-        this.$store.commit('updateSwitcher', switcher)
-      }
+    @Watch('selectedRail.name')
+    onFeederSelected () {
+      (<any>this.$refs.connectionDialog).show();
     }
 
+    /**
+     * スイッチの切替が行われた時、スイッチおよび接続されたポイントの状態を変更してストアに通知する
+     * @param {string} direction
+     */
     @Watch('direction')
     onStateChanged (direction: string) {
       let switcher = clone(this.switcher)
@@ -83,6 +89,16 @@
       this.$store.commit('setCurrentSwitcher', this.switcher.name)
       this.$store.commit('setEditorMode', EditorMode.TURNOUT_SELECTING)
     }
+
+    onModalOK () {
+      // Addボタンを押したのがこのパワーパックで、かつ選択されたフィーダーが未登録の場合
+      if (this.switcher.name === this.currentSwitcher) {
+        let switcher = clone(this.switcher)
+        switcher.turnouts.push(this.selectedRail)
+        this.$store.commit('updateSwitcher', switcher)
+      }
+    }
+
   }
 </script>
 

@@ -51,7 +51,7 @@ export class SimpleTurnout extends Rail {
                 break;
         }
 
-        super(startPoint, angle, parts, name);
+        super(startPoint, 0, parts, name);
 
         this.length = length;
         this.radius = radius;
@@ -91,7 +91,7 @@ export class SymmetricalTurnout extends Rail {
             new CurveRailPart(startPoint, 180, radius, centerAngle, RailPartAnchor.END, false)
         ];
 
-        super(startPoint, angle, parts, name);
+        super(startPoint, 0, parts, name);
 
         this.radius = radius;
         this.centerAngle = centerAngle;
@@ -150,7 +150,7 @@ export class CurvedTurnout extends Rail {
                 break;
         }
 
-        super(startPoint, angle, parts, name);
+        super(startPoint, 0, parts, name);
 
         // this.angle = angle;
         this.innerRadius = innerRadius;
@@ -164,7 +164,7 @@ export class CurvedTurnout extends Rail {
       ]
 
         this.move(startPoint, this.joints[anchorJointIndex]);
-        this.rotate(this.angle, this.joints[anchorJointIndex]);
+        this.rotate(angle, this.joints[anchorJointIndex]);
 
         this.showJoints();
     }

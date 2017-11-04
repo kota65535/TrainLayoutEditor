@@ -25,18 +25,18 @@
   import Component from 'vue-class-component'
   import {Model, Prop, Watch} from 'vue-property-decorator'
   import {State, Getter} from "vuex-class"
-  import {PaletteItem, EditorMode} from '../lib/PaletteItem'
-  import logger from '../logging'
+  import {PaletteItem, EditorMode} from '../../lib/PaletteItem'
+  import logger from '../../logging'
   import paper, {Point} from "paper"
-  import {FeederData} from "../lib/LayoutManager";
-  import {FeederSocket, FeederDirection, FeederStoreState} from "../lib/rails/parts/FeederSocket";
-  import {SwitcherState} from "../store/state";
+  import {FeederData} from "../../lib/LayoutManager";
+  import {FeederSocket, FeederDirection, FeederStoreState} from "../../lib/rails/parts/FeederSocket";
+  import {SwitcherState} from "../../store/state";
   import clone from "clone"
-  import {Rail, RailStoreState} from "../lib/rails/Rail";
+  import {Rail, RailStoreState} from "../../lib/rails/Rail";
   import RailFactory from "src/lib/RailFactory"
-  import {cloneRail} from "../lib/RailUtil";
-  import {FlowDirection} from "../lib/rails/parts/RailPart";
-  import {SimpleTurnout, TurnoutDirection} from "../lib/rails/Turnout";
+  import {cloneRail} from "../../lib/RailUtil";
+  import {FlowDirection} from "../../lib/rails/parts/RailPart";
+  import {SimpleTurnout, TurnoutDirection} from "../../lib/rails/Turnout";
 
   @Component
   export default class SwitcherConnectionDialog extends Vue {

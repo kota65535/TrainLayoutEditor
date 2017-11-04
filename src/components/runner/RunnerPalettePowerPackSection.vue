@@ -17,13 +17,13 @@
   import Component from 'vue-class-component'
   import {Model, Prop, Watch} from 'vue-property-decorator'
   import {State, Getter} from "vuex-class"
-  import {PaletteItem, EditorMode, RunnerPaletteData} from '../lib/PaletteItem'
-  import logger from '../logging'
+  import {PaletteItem, EditorMode, RunnerPaletteData} from '../../lib/PaletteItem'
+  import logger from '../../logging'
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
-  import {FeederData} from "../lib/LayoutManager";
-  import {FeederDirection} from "../lib/rails/parts/FeederSocket";
-  import {PowerPackState} from "../store/state";
+  import {FeederData} from "../../lib/LayoutManager";
+  import {FeederDirection} from "../../lib/rails/parts/FeederSocket";
+  import {PowerPackState} from "../../store/state";
   import RunnerPalettePowerPack from './RunnerPalettePowerPack'
 
   @Component({

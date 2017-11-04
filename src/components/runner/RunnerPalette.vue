@@ -1,7 +1,8 @@
 <template>
-  <section class="builder-palette">
+  <section class="runner-palette">
     <div class="container-fluid">
-      <builder-palette-section v-for="section in this.getBuilderPaletteData.sections" :name="section.name" :items="section.items"/>
+      <runner-palette-power-pack-section/>
+      <runner-palette-turnout-section/>
     </div>
   </section>
 </template>
@@ -11,25 +12,25 @@
   import Component from 'vue-class-component'
   import {Prop} from 'vue-property-decorator'
   import {Getter} from 'vuex-class'
-  import BuilderPaletteSection from './BuilderPaletteSection'
-  import {BuilderPaletteData, PaletteItem} from '../lib/PaletteItem'
-  import logger from '../logging'
+  import RunnerPalettePowerPackSection from './RunnerPalettePowerPackSection'
+  import RunnerPaletteTurnoutSection from './RunnerPaletteSwitcherSection'
+  import {PaletteItem} from '../../lib/PaletteItem'
+  import logger from '../../logging'
 
   @Component({
     components: {
-      BuilderPaletteSection
+      RunnerPalettePowerPackSection,
+      RunnerPaletteTurnoutSection
     }
   })
-  export default class BuilderPalette extends Vue {
-    @Getter
-    getBuilderPaletteData: BuilderPaletteData
+  export default class RunnerPalette extends Vue {
   }
 </script>
 
 <style lang="scss" scoped>
-  @import "../css/app.scss";
+  @import "../../css/app";
 
-  .builder-palette {
+  .runner-palette {
     /* position */
     position: fixed;
     margin-top: $menu-bar-height;

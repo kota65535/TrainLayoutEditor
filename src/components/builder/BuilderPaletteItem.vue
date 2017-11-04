@@ -12,8 +12,8 @@
   import Component from 'vue-class-component'
   import {Prop} from 'vue-property-decorator'
   import {State} from "vuex-class"
-  import {PaletteItem, EditorMode} from '../lib/PaletteItem'
-  import logger from '../logging'
+  import {PaletteItem, EditorMode} from '../../lib/PaletteItem'
+  import logger from '../../logging'
   import RailFactory from "src/lib/RailFactory"
   import paper, {Point} from "paper"
 
@@ -54,7 +54,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../css/app.scss";
+  @import "../../css/app";
 
   /* for debug */
   [class*="col-"] {

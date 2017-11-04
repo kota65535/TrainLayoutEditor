@@ -13,8 +13,8 @@
   import MenuBar from './MenuBar.vue'
   import MainCanvas from './MainCanvas.vue'
   import ToolBar from './ToolBar.vue'
-  import BuilderPalette from './BuilderPalette'
-  import RunnerPalette from './RunnerPalette'
+  import BuilderPalette from './builder/BuilderPalette'
+  import RunnerPalette from './runner/RunnerPalette'
   import Component from 'vue-class-component'
   import {State} from "vuex-class"
 

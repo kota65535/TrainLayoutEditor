@@ -6,7 +6,7 @@
           <b-form-input id="input-small" size="sm" type="text" :value="switcher.name"></b-form-input>
         </b-col>
         <b-col cols=3>
-          <b-button size="sm" @click="onAddTurnout">+</b-button>
+          <b-button size="sm" @click="onConnectTurnout">+</b-button>
         </b-col>
       </b-row>
     </div>
@@ -61,16 +61,43 @@
     selectedRail: RailStoreState
 
     @State
-    currentSwitcher: string
+    currentSwitcherName: string
+
+    @State
+    shouldShowSwitcherConnectionDialog: boolean
+
+    @State
+    isTurnoutSelected: boolean
 
     direction: string = '0'
 
     /**
-     * レールが選択されたらダイアログを表示する
+     * スイッチにポイントを接続するための処理を開始する。
      */
-    @Watch('selectedRail.name')
+    onConnectTurnout () {
+      this.$store.commit('setCurrentSwitcher', this.switcher.name)
+      this.$store.commit('setEditorMode', EditorMode.TURNOUT_SELECTING)
+    }
+
+    /**
+     * ポイントが選択されたら、ダイアログを表示する
+     */
+    @Watch('shouldShowSwitcherConnectionDialog')
     onFeederSelected () {
-      (<any>this.$refs.connectionDialog).show();
+      if (this.isCurrentSwitcher()) {
+        (<any>this.$refs.connectionDialog).show();
+      }
+    }
+
+    /**
+     * ダイアログでOKボタンが押されたら、スイッチにポイントを接続する
+     */
+    onModalOK () {
+      if (this.isCurrentSwitcher()) {
+        let switcher = clone(this.switcher)
+        switcher.turnouts.push(this.selectedRail)
+        this.$store.commit('updateSwitcher', switcher)
+      }
     }
 
     /**
@@ -85,18 +112,12 @@
       this.$store.dispatch('setSwitcherDirection', switcher)
     }
 
-    onAddTurnout () {
-      this.$store.commit('setCurrentSwitcher', this.switcher.name)
-      this.$store.commit('setEditorMode', EditorMode.TURNOUT_SELECTING)
-    }
-
-    onModalOK () {
-      // Addボタンを押したのがこのパワーパックで、かつ選択されたフィーダーが未登録の場合
-      if (this.switcher.name === this.currentSwitcher) {
-        let switcher = clone(this.switcher)
-        switcher.turnouts.push(this.selectedRail)
-        this.$store.commit('updateSwitcher', switcher)
-      }
+    /**
+     * 現在処理中のスイッチか否かを返す
+     * @returns {boolean}
+     */
+    private isCurrentSwitcher () {
+      return this.switcher.name === this.currentSwitcherName
     }
 
   }

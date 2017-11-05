@@ -28,7 +28,8 @@ export interface State {
   flowDirectionTable: FlowDirectionTable
 
   switchers: SwitcherState[]
-  currentSwitcher: string
+  currentSwitcherName: string
+  shouldShowSwitcherConnectionDialog: boolean
 }
 
 

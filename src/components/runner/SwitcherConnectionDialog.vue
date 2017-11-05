@@ -45,15 +45,20 @@
     @Prop()
     switcher: SwitcherState
 
+    isShown = false
+
     onShown() {
       this.drawRails()
+      // this.isShown = true
     }
 
-    @Watch('turnout')
-    onTurnoutChanged () {
-      // Turnoutの状態が変わったら再描画する
-      this.drawRails()
-    }
+    // @Watch('turnout')
+    // onTurnoutChanged () {
+    //   // Turnoutの状態が変わったら再描画する
+    //   if (this.isShown) {
+    //     this.drawRails()
+    //   }
+    // }
 
     show() {
       (<any>this.$refs.modal).show()
@@ -83,9 +88,12 @@
      * Canvasにレールを描画する。
      * ダイアログが表示された直後でないとCanvasのサイズが0なのでこのタイミングで行う
      */
-    drawRails () {
+    private drawRails () {
       // 現在のProjectを取得しておく
-      let currentProject = paper.project
+      let currentProjectIndex = null
+      if (paper.project) {
+        currentProjectIndex = paper.project.index
+      }
 
       // 通電状態ごとに描画
       for (let i=0 ; i < this.turnout.conductionTable.length ; ++i) {
@@ -119,8 +127,8 @@
       }
 
       // 現在のProjectを元に戻す
-      if (currentProject) {
-        currentProject.activate()
+      if (currentProjectIndex) {
+        paper.projects[currentProjectIndex].activate()
       }
     }
   }

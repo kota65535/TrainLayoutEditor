@@ -81,7 +81,7 @@ export default ({
   },
 
   setCurrentSwitcher(state: State, name: string) {
-    state.currentSwitcher = name
+    state.currentSwitcherName = name
   },
 
   selectTurnout(state: State, rail: RailStoreState) {

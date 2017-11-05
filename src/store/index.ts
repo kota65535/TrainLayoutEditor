@@ -45,7 +45,8 @@ const state: State = {
   currentPowerPack: null,
   switchers: [],
   selectedRailName: null,
-  currentSwitcher: null,
+  currentSwitcherName: null,
+  shouldShowSwitcherConnectionDialog: false,
 
   flowDirectionTable: null,
 }

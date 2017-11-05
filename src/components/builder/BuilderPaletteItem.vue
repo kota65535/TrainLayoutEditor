@@ -24,7 +24,10 @@
 
     mounted () {
       // 現在のProjectを取得しておく
-      let currentProject = paper.project
+      let currentProjectIndex = null
+      if (paper.project) {
+        currentProjectIndex = paper.project.index
+      }
 
       let target = `${this.item.id}-canvas`
       paper.setup(target);
@@ -42,8 +45,8 @@
       }
 
       // 現在のProjectを元に戻す
-      if (currentProject) {
-        currentProject.activate()
+      if (currentProjectIndex) {
+        paper.projects[currentProjectIndex].activate()
       }
     }
 

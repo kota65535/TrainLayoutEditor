@@ -1,6 +1,6 @@
 import {Group, Point} from "paper";
 import {initCanvas} from "test/unit/spec_helper";
-import {Joint, JointDirection} from "src/lib/rails/parts/Joint";
+import {Joint, JointDirection} from "src/lib/parts/Joint";
 
 describe('Joint', () => {
   beforeAll(() => {
@@ -40,9 +40,6 @@ describe('Joint', () => {
     joint1.connect(joint2);
 
     let group = new Group()
-
-    group.addChild(joint1.basePart.path)
-    group.addChild(joint2.basePart.path)
 
     // group.remove()
     joint1.remove()

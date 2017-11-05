@@ -29,13 +29,13 @@
   import logger from '../../logging'
   import paper, {Point} from "paper"
   import {FeederData} from "../../lib/LayoutManager";
-  import {FeederSocket, FeederDirection, FeederStoreState} from "../../lib/rails/parts/FeederSocket";
+  import {FeederSocket, FeederDirection, FeederStoreState} from "src/lib/parts/FeederSocket";
   import {SwitcherState} from "../../store/state";
   import clone from "clone"
   import {Rail, RailStoreState} from "../../lib/rails/Rail";
   import RailFactory from "src/lib/RailFactory"
   import {cloneRail} from "../../lib/RailUtil";
-  import {FlowDirection} from "../../lib/rails/parts/RailPart";
+  import {FlowDirection} from "src/lib/parts/RailPart";
   import {SimpleTurnout, TurnoutDirection} from "../../lib/rails/Turnout";
 
   @Component

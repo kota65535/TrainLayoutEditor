@@ -1,13 +1,13 @@
 /**
  * Created by tozawa on 2017/07/12.
  */
-import {RectPart} from "./primitives/RectPart";
-import logger from "../../../logging";
-import {DetectablePart, DetectionState} from "./primitives/DetectablePart";
-import {CirclePart} from "./primitives/CirclePart";
+import logger from "src/logging";
+import {DetectionState} from "src/lib/parts/primitives/DetectablePart";
 import {Gap} from "./Gap";
 import {Joint} from "./Joint";
 import {Path} from "paper";
+import {DetectableRectPart} from "./primitives/DetectableRectPart";
+import {createCirclePath} from "./primitives/CirclePart";
 
 let log = logger("GapSocket");
 
@@ -29,14 +29,13 @@ export enum GapConnectionState {
  * ジョイントが接続された状態では、ギャップジョイナーとギャップは重なり合う状態になる。
  * この時、
  */
-export class GapSocket extends DetectablePart {
+export class GapSocket extends DetectableRectPart {
 
-  // 定数
   static WIDTH = 6;
-  static HEIGHT = 12;
+  static HEIGHT = 20;
   static HIT_RADIUS = 20;
   static FILL_COLORS = ["red", "deepskyblue", "red"];
-  static OPACITIES = [0.1, 0.2];
+  static OPACITIES = [0.4, 0.4];
 
   private _joint: Joint;                        // 所属するジョイント
   private _connectedGap: Gap;                   // 接続されたギャップオブジェクト
@@ -47,25 +46,38 @@ export class GapSocket extends DetectablePart {
    * @param {Joint} joint
    */
   constructor(joint: Joint) {
-    let base = new CirclePart(joint.position, 0, 5, 'black');
-    let detection = new CirclePart(joint.position, 0, GapSocket.HIT_RADIUS, GapSocket.FILL_COLORS[0]);
-    super(joint.position, joint.angle, base, detection, GapSocket.FILL_COLORS, GapSocket.OPACITIES, false);
+    let detector = createCirclePath(GapSocket.HIT_RADIUS)
+    // let base = new CirclePart(joint.position, 0, 5, 'black');
+    // let detection = new CirclePart(joint.position, 0, GapSocket.HIT_RADIUS, GapSocket.FILL_COLORS[0]);
+    super(joint.position, joint.angle, GapSocket.WIDTH, GapSocket.HEIGHT, detector, GapSocket.FILL_COLORS, GapSocket.OPACITIES, false)
 
     this._joint = joint;
     this._connectedGap = null;
 
     // 最初は無効で未接続状態
-    this.enabled = true;
-    this.connectionState = GapConnectionState.OPEN;
-    this.enabled = false;
+    this.enabled = true
+    this.connectionState = GapConnectionState.OPEN
+    this.enabled = false
   }
 
+  /**
+   * このギャップソケットが属するジョイント
+   * @returns {}
+   */
   get joint(): Joint { return this._joint; }
   set joint(value: Joint) { this._joint = value; }
 
+  /**
+   * 接続されているフィーダーオブジェクト
+   * @returns {Gap}
+   */
   get connectedGap(): Gap { return this._connectedGap; }
   set connectedGap(value: Gap) { this._connectedGap = value; }
 
+  /**
+   * ギャップ接続状態
+   * @returns {GapConnectionState}
+   */
   get connectionState() { return this._connectionState; }
   set connectionState(gapState: GapConnectionState) {
     if (this._enabled) {
@@ -101,9 +113,6 @@ export class GapSocket extends DetectablePart {
     //     this.connectedGap.visible = isEnabled;
     // }
   }
-
-  // 主パーツはRectPartであることが分かっているのでキャストする
-  get basePart(): RectPart { return <RectPart>this.parts[0]; }
 
   /**
    * このソケットにギャップを接続する。

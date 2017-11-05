@@ -2,7 +2,7 @@
  * Created by tozawa on 2017/07/03.
  */
 import {PowerPackState, SwitcherState} from "../store/state";
-import {FeederStoreState} from "./rails/parts/FeederSocket";
+import {FeederStoreState} from "./parts/FeederSocket";
 
 export interface RunnerPaletteData {
   turnouts: any[]

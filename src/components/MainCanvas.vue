@@ -15,11 +15,11 @@
   import {PaletteItem, EditorMode} from "../lib/PaletteItem";
   import {Point} from "paper";
   import {StraightRail} from "../lib/rails/StraightRail";
-  import {RectPart} from "../lib/rails/parts/primitives/RectPart";
+  import {RectPart} from "../lib/parts/primitives/RectPart";
   import {Watch} from "vue-property-decorator";
   import {State} from "vuex-class"
   import {LayoutData} from "../lib/LayoutManager";
-  import {FeederStoreState} from "../lib/rails/parts/FeederSocket";
+  import {FeederStoreState} from "../lib/parts/FeederSocket";
   import {RailStoreState} from "../lib/rails/Rail";
   let log = logger('MainCanvas')
 

@@ -1,15 +1,15 @@
 /**
  * Created by tozawa on 2017/07/12.
  */
-import {Joint, JointState} from "./rails/parts/Joint";
+import {Joint, JointState} from "./parts/Joint";
 import {Rail} from "./rails/Rail";
-import {FeederSocket, FeederDirection} from "./rails/parts/FeederSocket";
-import { cloneRail, serialize, deserialize } from "./RailUtil";
+import {FeederDirection, FeederSocket} from "./parts/FeederSocket";
+import {deserialize, serialize} from "./RailUtil";
 import {hitTest, hitTestAll} from "./utils";
 import logger from "../logging";
-import {Group, Path, Point} from "paper";
-import {RailPart} from "./rails/parts/RailPart";
-import {GapSocket} from "./rails/parts/GapSocket";
+import {Path, Point} from "paper";
+import {RailPart} from "./parts/RailPart";
+import {GapSocket} from "./parts/GapSocket";
 
 let log = logger("LayoutManager");
 

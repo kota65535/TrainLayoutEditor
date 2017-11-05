@@ -1,6 +1,6 @@
 import {LayoutData} from "../lib/LayoutManager";
-import {PaletteItem, BuilderPaletteData, EditorMode} from "../lib/PaletteItem";
-import {FeederSocket, FeederDirection, FeederStoreState} from "../lib/rails/parts/FeederSocket";
+import {BuilderPaletteData, EditorMode} from "../lib/PaletteItem";
+import {FeederStoreState} from "src/lib/parts/FeederSocket";
 import {RailStoreState} from "../lib/rails/Rail";
 import {FlowDirectionTable} from "../lib/LayoutSimulator";
 

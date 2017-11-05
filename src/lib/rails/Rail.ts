@@ -2,12 +2,12 @@
  * Created by tozawa on 2017/07/03.
  */
 import {sprintf} from "sprintf-js";
-import { Joint, JointDirection } from "./parts/Joint";
-import { FeederSocket } from "./parts/FeederSocket";
+import {Joint, JointDirection} from "src/lib/parts/Joint";
+import {FeederSocket} from "src/lib/parts/FeederSocket";
 import logger from "../../logging";
 import {Group, Point} from "paper";
-import {RailPart} from "./parts/RailPart";
-import {GapSocket} from "./parts/GapSocket";
+import {RailPart} from "src/lib/parts/RailPart";
+import {GapSocket} from "src/lib/parts/GapSocket";
 import {Storable} from "./Storable";
 
 const log = logger("Rail");
@@ -130,12 +130,12 @@ export class Rail implements Storable<RailStoreState> {
     railPart.joints.push(endJoint);
 
     // レールパーツの上に描画
-    this.pathGroup.addChild(startJoint.basePart.path)
-    this.pathGroup.addChild(endJoint.basePart.path)
+    this.pathGroup.addChild(startJoint.path)
+    this.pathGroup.addChild(endJoint.path)
 
     // 各レールパーツにフィーダーソケットの追加
     // FIXME: 多分これだとレールパーツが複数で一部がフィーダーソケットを持たないときにバグる
-    if (railPart.hasFeederSocket()) {
+    if (railPart.hasFeederSocket) {
       let feederSocket = new FeederSocket(railPart);
       railPart.feederSocket = feederSocket;
       this.feederSockets.push(feederSocket);

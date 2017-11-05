@@ -1,9 +1,9 @@
 /**
  * Created by tozawa on 2017/07/03.
  */
-import { Rail } from "./Rail";
-import { RailPartAnchor } from "./parts/RailPart";
-import { CurveRailPart } from "./parts/CurveRailPart";
+import {Rail} from "./Rail";
+import {RailPartAnchor} from "src/lib/parts/RailPart";
+import {CurveRailPart} from "src/lib/parts/CurveRailPart";
 import {Point} from "paper";
 
 
@@ -20,9 +20,9 @@ export class CurveRail extends Rail {
      * @param {number} centerAngle
      * @param {string} name
      */
-    constructor(startPoint: Point, angle: number, radius: number, centerAngle: number, name?: string) {
+    constructor(startPoint: Point, angle: number, radius: number, centerAngle: number, hasFeederSocket: boolean, name?: string) {
         let parts = [
-            new CurveRailPart(startPoint, 0, radius, centerAngle, RailPartAnchor.START, true)
+            new CurveRailPart(startPoint, 0, radius, centerAngle, RailPartAnchor.START, hasFeederSocket)
         ];
         super(startPoint, 0, parts, name);
 

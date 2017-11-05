@@ -41,7 +41,7 @@
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
   import {FeederData} from "../../lib/LayoutManager";
-  import {FeederSocket, FeederDirection, FeederStoreState} from "../../lib/rails/parts/FeederSocket";
+  import {FeederSocket, FeederDirection, FeederStoreState} from "src/lib/parts/FeederSocket"
   import {PowerPackState} from "../../store/state";
   import clone from "clone"
 

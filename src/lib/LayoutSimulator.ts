@@ -1,12 +1,12 @@
 /**
  * Created by tozawa on 2017/07/12.
  */
-import {Joint} from "./rails/parts/Joint";
+import {Joint} from "./parts/Joint";
 import {Rail} from "./rails/Rail";
-import {FeederSocket} from "./rails/parts/FeederSocket";
-import {FlowDirection, RailPart} from "./rails/parts/RailPart";
+import {FeederSocket} from "./parts/FeederSocket";
+import {FlowDirection, RailPart} from "./parts/RailPart";
 import logger from "../logging";
-import {GapSocket} from "./rails/parts/GapSocket";
+import {GapSocket} from "./parts/GapSocket";
 import {LayoutEditorStoreProxy} from "./LayoutEditorStoreProxy";
 
 let log = logger("LayoutSimulator");

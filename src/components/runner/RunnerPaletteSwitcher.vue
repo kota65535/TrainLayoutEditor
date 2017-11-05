@@ -40,7 +40,7 @@
   import logger from '../../logging'
   import paper, {Point} from "paper"
   import {FeederData} from "../../lib/LayoutManager";
-  import {FeederSocket, FeederDirection, FeederStoreState} from "../../lib/rails/parts/FeederSocket";
+  import {FeederSocket, FeederDirection, FeederStoreState} from "../../lib/parts/FeederSocket";
   import {SwitcherState} from "../../store/state";
   import clone from "clone"
   import {RailStoreState} from "../../lib/rails/Rail";

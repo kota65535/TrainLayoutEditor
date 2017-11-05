@@ -4,7 +4,7 @@ import {PowerPackState, State, SwitcherState} from "./state";
 import {PaletteItem} from "../lib/PaletteItem";
 import LayoutAPI from "../apis/layout";
 import GoogleAPI from "../apis/google";
-import {FeederStoreState} from "../lib/rails/parts/FeederSocket";
+import {FeederStoreState} from "src/lib/parts/FeederSocket";
 import {RailStoreState} from "../lib/rails/Rail";
 
 

@@ -22,7 +22,7 @@
   import {RailFactory} from "src/lib/RailFactory"
   import paper, {Point} from "paper"
   import {FeederData} from "../../lib/LayoutManager";
-  import {FeederDirection} from "../../lib/rails/parts/FeederSocket";
+  import {FeederDirection} from "../../lib/parts/FeederSocket";
   import {RailStoreState} from "../../lib/rails/Rail";
   import {SwitcherState} from "../../store/state";
   import RunnerPaletteSwitcher from "./RunnerPaletteSwitcher"

@@ -1,8 +1,8 @@
 /**
  * Created by tozawa on 2017/07/16.
  */
-import { StraightRail, DoubleStraightRail, GappedStraightRail } from "./rails/StraightRail";
-import { CurveRail, DoubleCurveRail } from "./rails/CurveRail";
+import {GappedStraightRail, StraightRail} from "./rails/StraightRail";
+import {CurveRail} from "./rails/CurveRail";
 import {CurvedTurnout, SimpleTurnout, SymmetricalTurnout, TurnoutDirection} from "./rails/Turnout";
 import * as paper from "paper";
 
@@ -37,16 +37,16 @@ export class RailFactory {
         return new GappedStraightRail(DEFAULT_POSITION, 0, 70);
     }
     C317_45() {
-        return new CurveRail(DEFAULT_POSITION, 0, 317, 45);
+        return new CurveRail(DEFAULT_POSITION, 0, 317, 45, true);
     }
     C280_45() {
-        return new CurveRail(DEFAULT_POSITION, 0, 280, 45);
+        return new CurveRail(DEFAULT_POSITION, 0, 280, 45, true);
     }
     C280_15() {
-        return new CurveRail(DEFAULT_POSITION, 0, 280, 15);
+        return new CurveRail(DEFAULT_POSITION, 0, 280, 15, true);
     }
     C541_15() {
-        return new CurveRail(DEFAULT_POSITION, 0, 541, 15);
+        return new CurveRail(DEFAULT_POSITION, 0, 541, 15, true);
     }
     PL541_15() {
         return new SimpleTurnout(DEFAULT_POSITION, 0, 140, 541, 15, TurnoutDirection.LEFT);

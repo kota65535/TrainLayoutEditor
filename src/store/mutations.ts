@@ -3,7 +3,7 @@ import {FileInfo, PowerPackState, State, SwitcherState} from "./state";
 import {MutationTree} from "vuex";
 import {EditorMode, PaletteItem} from "../lib/PaletteItem";
 import {RailStoreState} from "../lib/rails/Rail";
-import {FeederStoreState} from "../lib/rails/parts/FeederSocket";
+import {FeederStoreState} from "src/lib/parts/FeederSocket";
 import Vue from "vue";
 import {FlowDirectionTable} from "../lib/LayoutSimulator";
 

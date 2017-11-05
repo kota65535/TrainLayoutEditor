@@ -1,14 +1,15 @@
 /**
  * Created by tozawa on 2017/07/12.
  */
-import {RectPart} from "./primitives/RectPart";
 import {Feeder} from "./Feeder";
-import logger from "../../../logging";
-import {DetectablePart, DetectionState} from "./primitives/DetectablePart";
-import {CirclePart} from "./primitives/CirclePart";
+import logger from "src/logging";
+import {DetectionState} from "src/lib/parts/primitives/DetectablePart";
+import {createCirclePath} from "src/lib/parts/primitives/CirclePart";
 import {FlowDirection, RailPart} from "./RailPart";
-import {Path} from "paper";
-import {Storable} from "../Storable";
+import {Path, Point} from "paper";
+// import {Storable} from "Storable";
+import {DetectableRectPart} from "src/lib/parts/primitives/DetectableRectPart";
+import {Storable} from "../rails/Storable";
 
 let log = logger("FeederSocket");
 
@@ -16,7 +17,7 @@ let log = logger("FeederSocket");
  * フィーダーの接続状態
  */
 export enum FeederConnectionState {
-  OPEN,           // フィーダー未接続
+  OPEN = 0,           // フィーダー未接続
   CONNECTING,     // フィーダー接続中
   CONNECTED       // フィーダー接続後
 }
@@ -42,13 +43,12 @@ export interface FeederStoreState {
 /**
  * レールの両端の中点に存在するフィーダー差し込み口を表すクラス。
  */
-export class FeederSocket extends DetectablePart implements Storable<FeederStoreState> {
-  // 定数
-  static WIDTH = 6;
-  static HEIGHT = 12;
+export class FeederSocket extends DetectableRectPart implements Storable<FeederStoreState> {
+  static WIDTH = 8;
+  static HEIGHT = 15;
   static HIT_RADIUS = 20;
   static FILL_COLORS = ["limegreen", "deepskyblue", "limegreen"];
-  static OPACITIES = [0.2, 0.4];
+  static OPACITIES = [0.4, 0.6];
   static TO_FLOW_DIR = {
     [FeederDirection.START_TO_END]: [
       FlowDirection.END_TO_START,
@@ -74,10 +74,8 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
    */
   constructor(railPart: RailPart, direction: FeederDirection = FeederDirection.START_TO_END) {
     let angle = (railPart.startAngle + railPart.endAngle) / 2;
-    let rect = new RectPart(railPart.middlePoint, angle,
-      FeederSocket.WIDTH, FeederSocket.HEIGHT, FeederSocket.FILL_COLORS[0]);
-    let circle = new CirclePart(railPart.middlePoint, angle, FeederSocket.HIT_RADIUS, FeederSocket.FILL_COLORS[0]);
-    super(railPart.middlePoint, angle, rect, circle, FeederSocket.FILL_COLORS, FeederSocket.OPACITIES, false);
+    let detector = createCirclePath(FeederSocket.HIT_RADIUS)
+    super(railPart.middlePoint, angle, FeederSocket.WIDTH, FeederSocket.HEIGHT, detector, FeederSocket.FILL_COLORS, FeederSocket.OPACITIES, true);
 
     this._railPart = railPart
     this._direction = direction
@@ -89,23 +87,41 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
     this.enabled = true;
     this.connectionState = FeederConnectionState.OPEN;
     this.enabled = false;
-    // this._setFeederState(FeederState.OPEN);
 
     // console.log("FeederSocket", this.railPart.path.position);
   }
 
+  /**
+   * このフィーダーソケットが属するレールパーツ
+   * @returns {RailPart}
+   */
   get railPart(): RailPart { return this._railPart; }
-  set railPart(value: RailPart) { this._railPart = value; }
 
+  /**
+   * 接続されているフィーダーオブジェクト
+   * @returns {Feeder}
+   */
   get connectedFeeder(): Feeder { return this._connectedFeeder; }
   set connectedFeeder(value: Feeder) { this._connectedFeeder = value; }
 
+  /**
+   * 接続されているフィーダーオブジェクトの向き
+   * @returns {FeederDirection}
+   */
   get direction(): FeederDirection { return this._direction }
   set direction(value: FeederDirection) { this._direction = value }
 
+  /**
+   * 電流の極性
+   * @returns {boolean}
+   */
   get polarity(): boolean { return this._polarity; }
   set polarity(value: boolean) { this._polarity = value; }
 
+  /**
+   * フィーダー接続状態
+   * @returns {FeederConnectionState._connectionState}
+   */
   get connectionState() { return this._connectionState; }
   set connectionState(feederState: FeederConnectionState) {
     if (this._enabled) {
@@ -126,7 +142,7 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
       }
       this._connectionState = feederState;
     }
-    this.showInfo();
+    // this.showInfo();
   }
 
   get power(): number { return this._power; }
@@ -145,31 +161,40 @@ export class FeederSocket extends DetectablePart implements Storable<FeederStore
     // }
   }
 
-  // 主パーツはRectPartであることが分かっているのでキャストする
-  get basePart(): RectPart { return <RectPart>this.parts[0]; }
-
-  // フィーダー(Feederオブジェクトそのもの)の接続点
+  /**
+   * フィーダーオブジェクトの接続点
+   * @returns {"paper".Point}
+   */
   get feederPosition() {
     switch(this._direction) {
       case FeederDirection.START_TO_END:
-        return this.basePart.getCenterOfBottom();
+        return this.getCenterOfBottom();
       case FeederDirection.END_TO_START:
-        return this.basePart.getCenterOfTop();
+        return this.getCenterOfTop();
     }
-    return this.basePart.getCenterOfBottom();
+    return this.getCenterOfBottom();
   }
 
-  // フィーダーの向きによって角度は変わる
+  /**
+   * フィーダーソケットの角度。フィーダーの向きによって180度変化する。
+   * @returns {number}
+   */
   get angle() {
     switch(this._direction) {
       case FeederDirection.START_TO_END:
-        return this.basePart.angle;
+        return this._angle;
       case FeederDirection.END_TO_START:
-        return this.basePart.angle - 180;
+        return this._angle - 180;
+      default:
+        return this._angle
     }
   }
+  set angle(value: number) { this._angle = value }  // getterをオーバーライドしたらsetterもしなきゃいけない
 
-  // 接続しているレールの電流方向
+  /**
+   * 接続しているレールパーツを流れる電流の方向
+   * @returns {FlowDirection}
+   */
   get flowDirection(): FlowDirection {
     return FeederSocket.TO_FLOW_DIR[this.direction][this.polarity ? 1 : 0]
   }

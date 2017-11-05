@@ -1,20 +1,20 @@
 /**
  * Created by tozawa on 2017/07/12.
  */
-import {Joint, JointDirection, JointState} from "./rails/parts/Joint";
-import {FeederSocket, FeederConnectionState} from "./rails/parts/FeederSocket";
+import {Joint, JointDirection, JointState} from "./parts/Joint";
+import {FeederConnectionState, FeederSocket} from "./parts/FeederSocket";
 import {Rail} from "./rails/Rail";
 import {CurveRail} from "./rails/CurveRail";
-import {cloneRail, serialize, deserialize} from "./RailUtil";
+import {cloneRail} from "./RailUtil";
 import {LayoutData, LayoutManager} from "./LayoutManager";
 import {LayoutSimulator} from "./LayoutSimulator";
-import {hitTest, hitTestAll} from "./utils";
+import {hitTest} from "./utils";
 import logger from "../logging";
-import {PaletteItem, EditorMode} from "./PaletteItem";
+import {EditorMode} from "./PaletteItem";
 import {GridPaper} from "./GridPaper";
 import {KeyEvent, Point, project, ToolEvent} from "paper";
 import {RailFactory} from "./RailFactory";
-import {GapSocket, GapConnectionState} from "./rails/parts/GapSocket";
+import {GapConnectionState, GapSocket} from "./parts/GapSocket";
 import {LayoutEditorStoreProxy} from "./LayoutEditorStoreProxy";
 
 let log = logger("LayoutEditor");
@@ -250,9 +250,9 @@ export class LayoutEditor {
       gridPoints.forEach(point => {
         let joint = new Joint(point, this.gridJointsAngle, JointDirection.SAME_TO_ANGLE, null);
         // TODO: デバッグ用
-        joint.basePart.opacity = 0;
+        joint.opacity = 0;
         // joint.setOpacity(0);
-        joint.basePart.visible = false;
+        joint.visible = false;
         this.gridJoints.push(joint);
       });
     }
@@ -327,7 +327,7 @@ export class LayoutEditor {
     // 接続先のレール（レイアウトが空ならジョイント）を最上部に表示する。
     // 接続先のジョイントに対するカーソルの当たり判定維持のため。
     if (this.isLayoutBlank()) {
-      toJoint.pathGroup.bringToFront();
+      toJoint.path.bringToFront();
     } else {
       toJoint.rail.pathGroup.bringToFront();
     }
@@ -673,7 +673,7 @@ export class LayoutEditor {
       if (this.isFeederSelectingMode()) {
         this.storeProxy.commitFeedersSelected(feederSocket)
       } else {
-        feederSocket.basePart.path.selected = !feederSocket.basePart.path.selected;
+        feederSocket.path.selected = !feederSocket.path.selected;
         feederSocket.connectedFeeder.path.selected = !feederSocket.connectedFeeder.path.selected;
       }
     }
@@ -693,7 +693,7 @@ export class LayoutEditor {
     if (gapSocket.connectionState !== GapConnectionState.CONNECTED) {
       this.putGap(gapSocket);
     } else {
-      gapSocket.basePart.path.selected = !gapSocket.basePart.path.selected;
+      gapSocket.path.selected = !gapSocket.path.selected;
       gapSocket.connectedGap.path.selected = !gapSocket.connectedGap.path.selected;
     }
     return true;

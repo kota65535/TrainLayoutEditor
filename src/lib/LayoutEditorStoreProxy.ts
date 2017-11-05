@@ -1,10 +1,10 @@
 /**
  * Created by tozawa on 2017/07/12.
  */
-import {FeederSocket} from "./rails/parts/FeederSocket";
+import {FeederSocket} from "./parts/FeederSocket";
 import {Rail} from "./rails/Rail";
 import logger from "../logging";
-import {GapSocket} from "./rails/parts/GapSocket";
+import {GapSocket} from "./parts/GapSocket";
 import {Store} from "vuex";
 import {State} from "../store/state";
 import {EditorMode} from "./PaletteItem";

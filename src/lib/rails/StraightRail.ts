@@ -1,9 +1,9 @@
 /**
  * Created by tozawa on 2017/07/03.
  */
-import { Rail } from "./Rail";
-import { RailPartAnchor } from "./parts/RailPart";
-import { StraightRailPart } from "./parts/StraightRailPart";
+import {Rail} from "./Rail";
+import {RailPartAnchor} from "src/lib/parts/RailPart";
+import {StraightRailPart} from "src/lib/parts/StraightRailPart";
 import {Point} from "paper";
 
 

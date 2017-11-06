@@ -108,7 +108,7 @@ export abstract class DetectablePart extends SinglePart {
       this.detectionState = this._detectionState
     } else {
       // 無効時の主パーツの可視性は isBasePartPersistent により決定される
-      this.path.visible = this._isBasePartPersistent;
+      // this.path.visible = this.visible && this.isBasePartPersistent;
     }
     this._enabled = value
   }

@@ -36,12 +36,11 @@ export enum JointDirection {
  */
 export class Joint extends DetectableRectPart {
   static WIDTH = 8;
-  static HEIGHT = 16;
+  static HEIGHT = 18;
   static HIT_RADIUS = 20;
   static FILL_COLORS = ["darkorange", "deepskyblue", "grey"];
   static OPACITIES = [0.4, 0.6];
   static SHRINKING_RATE = 0.7;
-
 
   private _direction: JointDirection;     // 接続方向
   private _jointState: JointState;        // 接続状態

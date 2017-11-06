@@ -35,7 +35,7 @@ export enum FlowDirection {
  * 検出領域は四角形（y軸方向のみ）
  */
 export abstract class RailPart extends DetectablePart {
-  static WIDTH = 15;
+  static WIDTH = 14;
   static MARGIN = 6;
   static FLOW_COLOR_1 = "royalblue";
   static FLOW_COLOR_2 = "greenyellow";

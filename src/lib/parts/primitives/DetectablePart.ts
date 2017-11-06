@@ -72,7 +72,9 @@ export abstract class DetectablePart extends SinglePart {
 
   set visible(value: boolean) {
     this.path.visible = value;
-    this.detectionPath.visible = value;
+    if (this.enabled) {
+      this.detectionPath.visible = value;
+    }
   }
 
   /**
@@ -99,16 +101,12 @@ export abstract class DetectablePart extends SinglePart {
   get enabled() { return this._enabled; }
 
   set enabled(value: boolean) {
-    // 本体が可視の場合だけ設定可
-    // 検出領域の可視性を設定
-    this.detectionPath.visible = this.visible && value
-    this.path.visible = this.visible && value;
-    if (value) {
-      // 有効ならば現在の状態を改めて設定
-      this.detectionState = this._detectionState
-    } else {
-      // 無効時の主パーツの可視性は isBasePartPersistent により決定される
-      // this.path.visible = this.visible && this.isBasePartPersistent;
+    if (this.visible) {
+      this.detectionPath.visible = value
+      if (value) {
+        // 有効ならば現在の状態を改めて設定
+        this.detectionState = this._detectionState
+      }
     }
     this._enabled = value
   }
@@ -129,9 +127,8 @@ export abstract class DetectablePart extends SinglePart {
           this.detectionPath.fillColor = this.fillColors[DetectionState.BEFORE_DETECT];
           // 主パーツは色だけ変更
           this.path.fillColor = this.fillColors[DetectionState.BEFORE_DETECT];
-          // 親グループ（Railオブジェクトを想定）内で最前に移動
-          // TODO: レールが同士が近いとお互いのレールの上下関係により当たり判定が最前に表示されない。
-          this.path.bringToFront();
+          // 検出パーツを最前面に移動
+          this.detectionPath.bringToFront();
           break;
         case DetectionState.DETECTING:
           // 当たり判定領域を半透明化
@@ -140,8 +137,8 @@ export abstract class DetectablePart extends SinglePart {
           this.detectionPath.fillColor = this.fillColors[DetectionState.DETECTING];
           // 主パーツは色だけ変更
           this.path.fillColor = this.fillColors[DetectionState.DETECTING];
-          // 親グループ（Railオブジェクトを想定）内で最前に移動
-          this.path.bringToFront();
+          // 検出パーツを最前面に移動
+          this.detectionPath.bringToFront();
           break;
         case DetectionState.AFTER_DETECT:
           // 当たり判定領域を不可視（無効化）

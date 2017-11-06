@@ -126,9 +126,9 @@ export class LayoutEditor {
   changeToRailMode () {
     log.info("Changing to rail mode...");
     // ジョイントを有効化、フィーダーソケットを無効化
-    this.layoutManager.rails.forEach(r => r.enableJoints())
-    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false) })
-    this.layoutManager.rails.forEach(r => r.enableGapSockets(false))
+    this.layoutManager.rails.forEach(r => r.enableJoints(true, true))
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false, false) })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets(false, false))
     log.info("Changed to rail mode.");
   }
 
@@ -143,9 +143,9 @@ export class LayoutEditor {
   changeToFeederMode() {
     log.info("Changed to feeder mode...");
     // ジョイントを無効化、フィーダーソケットを有効化
-    this.layoutManager.rails.forEach(r => r.enableJoints(false))
-    this.layoutManager.rails.forEach(r => { r.enableFeederSockets() })
-    this.layoutManager.rails.forEach(r => r.enableGapSockets(false))
+    this.layoutManager.rails.forEach(r => r.enableJoints(true, false))
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(true, true) })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets(false, false))
     log.info("Changed to feeder mode.");
   }
 
@@ -155,9 +155,9 @@ export class LayoutEditor {
   changeToGapJoinerMode() {
     log.info("Changed to gap mode...");
     // ジョイントを有効化、フィーダーソケットを無効化
-    this.layoutManager.rails.forEach(r => r.enableJoints(false))
-    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false) })
-    this.layoutManager.rails.forEach(r => r.enableGapSockets())
+    this.layoutManager.rails.forEach(r => r.enableJoints(true, false))
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false, false) })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets(true, true))
     log.info("Changed to gap mode.");
   }
 
@@ -229,9 +229,9 @@ export class LayoutEditor {
       // グリッド上に透明なジョイントを作成
       gridPoints.forEach(point => {
         let joint = new Joint(point, this.gridJointsAngle, JointDirection.SAME_TO_ANGLE, null);
-        // TODO: デバッグ用
-        joint.opacity = 1.0;
-        // joint.setOpacity(0);
+        // 主パーツを透明にして、検出範囲を少し大きめにする
+        joint.scale(1.5, 1.5)
+        joint.opacity = 0;
         joint.visible = true;
         this.gridJoints.push(joint);
       });

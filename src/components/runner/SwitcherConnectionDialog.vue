@@ -122,7 +122,7 @@
         };
 
         // ジョイントの検出範囲を非表示
-        rail.enableJoints(false)
+        rail.enableJoints(true, false)
       }
 
       // 現在のProjectを元に戻す

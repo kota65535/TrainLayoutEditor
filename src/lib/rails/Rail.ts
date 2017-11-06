@@ -9,6 +9,7 @@ import {Group, Point, Rectangle} from "paper";
 import {RailPart} from "src/lib/parts/RailPart";
 import {GapSocket} from "src/lib/parts/GapSocket";
 import {Storable} from "./Storable";
+import {visitor} from "uglify-js";
 
 const log = logger("Rail");
 
@@ -58,9 +59,9 @@ export class Rail implements Storable<RailStoreState> {
 
     // IDを設定
     this.name = name;
-    this.enableJoints()
-    this.enableFeederSockets(false)
-    this.enableGapSockets(false)
+    this.enableJoints(true, true)
+    this.enableFeederSockets(false, false)
+    this.enableGapSockets(false, false)
   }
 
   get angle(): number {
@@ -409,25 +410,25 @@ export class Rail implements Storable<RailStoreState> {
   /**
    * ジョイントの検出を有効化する。
    */
-  enableJoints(value: boolean = true) {
-    this.joints.forEach(j => j.visible = value)
-    this.joints.forEach(j => j.enabled = value)
+  enableJoints(visible: boolean, enabled: boolean) {
+    this.joints.forEach(j => j.visible = visible)
+    this.joints.forEach(j => j.enabled = enabled)
   }
 
   /**
    * フィーダーの検出を有効化する。
    */
-  enableFeederSockets(value: boolean = true) {
-    this.feederSockets.forEach(f => f.visible = value)
-    this.feederSockets.forEach(f => f.enabled = value)
+  enableFeederSockets(visible: boolean, enabled: boolean) {
+    this.feederSockets.forEach(f => f.visible = visible)
+    this.feederSockets.forEach(f => f.enabled = enabled)
   }
 
   /**
    * ギャップの検出を有効化する。
    */
-  enableGapSockets(value: boolean = true) {
-    this.gapSockets.forEach(g => g.visible = value)
-    this.gapSockets.forEach(g => g.enabled = value)
+  enableGapSockets(visible: boolean, enabled: boolean) {
+    this.gapSockets.forEach(g => g.visible = visible)
+    this.gapSockets.forEach(g => g.enabled = enabled)
   }
 
   /**

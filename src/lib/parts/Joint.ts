@@ -101,7 +101,7 @@ export class Joint extends DetectableRectPart {
    * @param {JointDirection} direction 接続方向
    * @param {Rail} rail ジョイントが属するレールオブジェクト
    */
-  constructor(position: Point, angle: number, direction: JointDirection, rail: any) {
+  constructor(position: Point, angle: number, direction: JointDirection, rail: Rail) {
     let circlePosition = new Point(Joint.WIDTH/2, 0);
     switch (direction) {
       case JointDirection.SAME_TO_ANGLE:

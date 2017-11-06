@@ -40,7 +40,7 @@
           let center = new Point((<any>canvas).clientWidth / 2, (<any>canvas).clientHeight / 2);
           rail.move(center, rail.bounds.center);
           rail.scale(0.4, 0.4, center);
-          rail.enableJoints(false)
+          rail.enableJoints(true, false)
           break;
       }
 

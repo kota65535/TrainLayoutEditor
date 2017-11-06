@@ -76,17 +76,17 @@ describe('CurveRail class', function () {
   });
   it('enables parts', function () {
     let r1 = new CurveRail(new Point(0, 600), 30, 200, 45, true)
-    r1.enableJoints()
-    r1.enableFeederSockets(false)
-    r1.enableGapSockets(false)
+    r1.enableJoints(true, true)
+    r1.enableFeederSockets(false, false)
+    r1.enableGapSockets(false, false)
     let r2 = new CurveRail(new Point(200, 600), 30, 200, 45, true)
-    r2.enableJoints(false)
-    r2.enableFeederSockets()
-    r2.enableGapSockets(false)
+    r2.enableJoints(true, false)
+    r2.enableFeederSockets(true, true)
+    r2.enableGapSockets(false, false)
     let r3 = new CurveRail(new Point(400, 600), 30, 200, 45, true)
-    r3.enableJoints(false)
-    r3.enableFeederSockets(false)
-    r3.enableGapSockets()
+    r3.enableJoints(true, false)
+    r3.enableFeederSockets(false, false)
+    r3.enableGapSockets(true, true)
   });
 
 });

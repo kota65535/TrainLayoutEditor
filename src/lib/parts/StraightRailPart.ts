@@ -24,7 +24,7 @@ export class StraightRailPart extends RailPart {
   constructor(point: Point, angle: number, length: number, anchorType: RailPartAnchor, hasFeederSocket: boolean) {
     let main = createRectPath(length, RailPart.WIDTH)
     let detector = createRectPath(length, RailPart.WIDTH + RailPart.MARGIN)
-    super(point, angle, main, detector, hasFeederSocket);
+    super(main, detector, hasFeederSocket);
 
     this.length = length;
 

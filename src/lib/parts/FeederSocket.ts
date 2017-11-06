@@ -48,7 +48,7 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
   static HEIGHT = 15;
   static HIT_RADIUS = 20;
   static FILL_COLORS = ["limegreen", "deepskyblue", "limegreen"];
-  static OPACITIES = [0.4, 0.6];
+  static OPACITIES = [0.3, 0.5];
   static TO_FLOW_DIR = {
     [FeederDirection.START_TO_END]: [
       FlowDirection.END_TO_START,
@@ -61,7 +61,7 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
   }
 
   private _railPart: RailPart;             // 所属するレールパーツ
-  private _connectedFeeder: Feeder;        // 接続されたフィーダーオブジェクト
+  private _feeder: Feeder;        // 接続されたフィーダーオブジェクト
   private _direction: FeederDirection;              // フィーダーの向き
   private _polarity: boolean
   private _connectionState: FeederConnectionState;  // フィーダー接続状態
@@ -81,7 +81,7 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
     this._direction = direction
     this._polarity = true
     this._power = 0
-    this._connectedFeeder = null
+    this._feeder = null
 
     // 最初は無効で未接続状態
     this.enabled = true;
@@ -101,8 +101,13 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
    * 接続されているフィーダーオブジェクト
    * @returns {Feeder}
    */
-  get connectedFeeder(): Feeder { return this._connectedFeeder; }
-  set connectedFeeder(value: Feeder) { this._connectedFeeder = value; }
+  get feeder(): Feeder {
+    return this._feeder;
+  }
+
+  set feeder(value: Feeder) {
+    this._feeder = value;
+  }
 
   /**
    * 接続されているフィーダーオブジェクトの向き
@@ -123,9 +128,10 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
    * @returns {FeederConnectionState._connectionState}
    */
   get connectionState() { return this._connectionState; }
-  set connectionState(feederState: FeederConnectionState) {
+
+  set connectionState(value: FeederConnectionState) {
     if (this._enabled) {
-      switch(feederState) {
+      switch (value) {
         case FeederConnectionState.OPEN:
           this.detectionState = DetectionState.BEFORE_DETECT;
           break;
@@ -137,10 +143,10 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
           break;
       }
       // 接続されたフィーダーがあれば同じ状態に変更する
-      if (this._connectedFeeder) {
-        this._connectedFeeder.state = feederState;
+      if (this.feeder) {
+        this.feeder.detectionState = this.detectionState
       }
-      this._connectionState = feederState;
+      this._connectionState = value;
     }
     // this.showInfo();
   }
@@ -229,7 +235,7 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
    */
   connect(isDryRun: boolean = false) {
     if (!this.isConnected()) {
-      this._connectedFeeder = new Feeder(this);
+      this.feeder = new Feeder(this);
     }
 
     if (isDryRun) {
@@ -246,9 +252,9 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
     if (! this.isConnected()) {
       return;
     }
-    this._connectedFeeder.remove();
+    this.feeder.remove();
     this.connectionState = FeederConnectionState.OPEN;
-    this._connectedFeeder = null;
+    this.feeder = null;
   }
 
   /**
@@ -256,7 +262,7 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
    * @returns {boolean}
    */
   isConnected(): boolean {
-    return !!this._connectedFeeder;
+    return !!this.feeder;
   }
 
   /**
@@ -267,7 +273,7 @@ export class FeederSocket extends DetectableRectPart implements Storable<FeederS
    */
   containsPath(path: Path): boolean {
     if (this.isConnected()) {
-      return super.containsPath(path) || this._connectedFeeder.containsPath(path);
+      return super.containsPath(path) || this.feeder.containsPath(path);
     } else {
       return super.containsPath(path);
     }

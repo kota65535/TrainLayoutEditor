@@ -6,61 +6,76 @@ beforeEach(() => {
   jasmine.addMatchers(customMatchers);
 });
 
-describe('RectPart', function() {
+describe('RectPart class', function () {
   beforeAll(function() {
     initCanvas();
   })
-  it('creates rectangle at specified position, angle and size.', function() {
-    new RectPart(new Point(100,100), 45, 50, 50, 'black');
-    new RectPart(new Point(200,100), 45, 50, 50, 'black');
+  it('creates new instance', function () {
+    let p1 = new RectPart(new Point(100, 100), 45, 50, 50, 'black');
+    let p2 = new RectPart(new Point(200, 100), 45, 50, 50, 'black');
+    p1.scale(0.5, 0.3)
   });
-  it('moves to specified point on the basis of the position', function() {
-    let part = new RectPart(new Point(50, 50), 0, 50, 50, 'blue');
-    part.move(new Point(100, 200));
-    expect(part.position).toBeAt(new Point(100,200));
+
+  it('moves to specified point', function () {
+    let p1 = new RectPart(new Point(50, 50), 0, 50, 50, 'blue');
+    p1.move(new Point(100, 200));
+    expect(p1.position).toBeAt(new Point(100, 200));
+
+    let p2 = new RectPart(new Point(50, 50), 0, 50, 50, 'blue');
+    p2.move(new Point(200, 200), p2.getCenterOfTop());
+    expect(p2.position).toBeAt(new Point(200, 225));
   });
-  it('moves to specified point on the basis of the center of top', function() {
-    let part = new RectPart(new Point(50, 50), 0, 50, 50, 'blue');
-    part.move(new Point(200, 200), part.getCenterOfTop());
-    expect(part.position).toBeAt(new Point(200,225));
-  });
-  it('moves relatively by specified distance on the basis of the position', function() {
-    let part = new RectPart(new Point(50, 50), 45, 50, 50, 'blue');
-    part.moveRelatively(new Point(250, 150));
-    expect(part.position).toBeAt(new Point(300, 200));
+
+  it('moves relatively by specified distance', function () {
+    let p1 = new RectPart(new Point(50, 50), 45, 50, 50, 'blue');
+    p1.moveRelatively(new Point(250, 150));
+    expect(p1.position).toBeAt(new Point(300, 200));
   });
 
   it('rotates to specified angle around the position', function() {
-    let part = new RectPart(new Point(100, 300), 30, 50, 50, 'green');
-    part.rotate(45);
-    expect(part.position).toBeAt(new Point(100, 300));
-    expect(part.angle).toBe(45);
+    let p1 = new RectPart(new Point(100, 300), 30, 50, 50, 'green');
+    p1.rotate(45);
+    expect(p1.position).toBeAt(new Point(100, 300));
+    expect(p1.angle).toBe(45);
+
+    let p2 = new RectPart(new Point(200, 300), 0, 50, 50, 'green');
+    p2.rotate(90, p2.getCenterOfTop());
+    expect(p2.position).toBeAt(new Point(175, 275));
+    expect(p2.angle).toBe(90);
   });
-  it('rotates to specified angle around the specified position', function() {
-    let part = new RectPart(new Point(200, 300), 0, 50, 50, 'green');
-    part.rotate(90, part.getCenterOfTop());
-    expect(part.position).toBeAt(new Point(175, 275));
-    expect(part.angle).toBe(90);
-  });
-  it('rotates by specified angle around the position', function() {
-    let part = new RectPart(new Point(300, 300), 30, 50, 50, 'green');
-    part.rotateRelatively(15);
-    expect(part.position).toBeAt(new Point(300, 300));
-    expect(part.angle).toBe(45);
+
+  it('rotates relatively by specified angle around the position', function () {
+    let p1 = new RectPart(new Point(300, 300), 30, 50, 50, 'green');
+    p1.rotateRelatively(15);
+    expect(p1.position).toBeAt(new Point(300, 300));
+    expect(p1.angle).toBe(45);
   });
 
   it('removes existing part', function() {
-    let part = new RectPart(new Point(100, 400), 30, 50, 50, 'green');
-    part.remove();
+    let p1 = new RectPart(new Point(100, 400), 30, 50, 50, 'red');
+    p1.remove();
   });
-  it('set visibility', function() {
-    let part = new RectPart(new Point(200, 400), 30, 50, 50, 'green');
-    part.visible = false;
-    expect(part.visible).toBe(false);
+
+  it('sets visibility', function () {
+    let p1 = new RectPart(new Point(200, 400), 30, 50, 50, 'red');
+    p1.visible = false;
+    expect(p1.visible).toBe(false);
   });
-  it('set opacity', function() {
-    let part = new RectPart(new Point(300, 400), 30, 50, 50, 'green');
-    part.opacity = 0.5;
-    expect(part.opacity).toBe(0.5);
+
+  it('sets opacity', function () {
+    let p1 = new RectPart(new Point(300, 400), 30, 50, 50, 'red');
+    p1.opacity = 0.5;
+    expect(p1.opacity).toBe(0.5);
   });
+
+  it('scales', function () {
+    let p1 = new RectPart(new Point(100, 500), 0, 50, 50, 'red');
+    p1.scale(0.5, 0.9)
+    // expect(p1.opacity).toBe(0.5);
+
+    let p2 = new RectPart(new Point(200, 500), 30, 50, 50, 'red');
+    p2.scale(0.5, 0.5)
+  });
+
+
 });

@@ -21,10 +21,14 @@ describe('DetectableRectPart', function() {
     part.rotate(45)
 
     let part2 = new DetectableRectPart(new Point(100,100), 0, 100, 100, createCirclePath(100), ['black', 'blue', 'red'], [0.5, 0.4, 0.3], true)
-    part.move(new Point(200, 200))
+    part.move(new Point(300, 100))
     part.rotate(45)
-
   });
+
+  it('scales', function () {
+    let p1 = new DetectableRectPart(new Point(100, 300), 0, 100, 100, createRectPath(150, 150), ['black', 'blue', 'red'], [0.5, 0.4, 0.3], true)
+    p1.scale(0.5, 0.5, p1.bounds.center)
+  })
 });
 
 describe('DetectableTrianglePart', function() {

@@ -31,7 +31,7 @@ export abstract class SinglePart implements Part {
   get bounds(): Rectangle { return this.path.bounds }
 
 
-  constructor(position: Point, angle: number, path: Path) {
+  constructor(path: Path) {
     this._angle = 0
 
     this.path = path

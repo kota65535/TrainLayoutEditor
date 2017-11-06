@@ -16,6 +16,7 @@
   import logger from '../../logging'
   import RailFactory from "src/lib/RailFactory"
   import paper, {Point} from "paper"
+  import {Rail} from "../../lib/rails/Rail";
 
   @Component
   export default class BuilderPaletteItem extends Vue {
@@ -35,12 +36,11 @@
 
       switch (this.item.mode) {
         case EditorMode.RAIL:
-          let rail = RailFactory[this.item.id]();
-          let bounds = rail.getBounds();
+          let rail: Rail = RailFactory[this.item.id]();
           let center = new Point((<any>canvas).clientWidth / 2, (<any>canvas).clientHeight / 2);
-          rail.move(center, bounds.center);
+          rail.move(center, rail.bounds.center);
           rail.scale(0.4, 0.4, center);
-          rail.disableJoints()
+          rail.enableJoints(false)
           break;
       }
 

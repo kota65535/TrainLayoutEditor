@@ -105,9 +105,8 @@
         rail.storeState = this.turnout
         // v-forの内部では$refsはArrayを返す
         let canvas = this.$refs[target][0]
-        let bounds = rail.getBounds();
         let center = new Point((<any>canvas).clientWidth / 2, (<any>canvas).clientHeight / 2);
-        rail.move(center, bounds.center)
+        rail.move(center, rail.bounds.center)
 
         // 電流アニメーションの表示
         let rootJoint = rail.railParts[0].joints[0]
@@ -123,7 +122,7 @@
         };
 
         // ジョイントの検出範囲を非表示
-        rail.disableJoints()
+        rail.enableJoints(false)
       }
 
       // 現在のProjectを元に戻す

@@ -24,11 +24,10 @@ export class CurveRail extends Rail {
         let parts = [
             new CurveRailPart(startPoint, 0, radius, centerAngle, RailPartAnchor.START, hasFeederSocket)
         ];
-        super(startPoint, 0, parts, name);
+      super(parts, name);
 
         this.radius = radius;
         this.centerAngle = centerAngle;
-        this.angle = 0;
 
         this.move(startPoint, this.joints[0]);
         this.rotate(angle, this.joints[0]);
@@ -58,7 +57,7 @@ export class DoubleCurveRail extends Rail {
             new CurveRailPart(startPoint, 0, outerRadius, centerAngle, RailPartAnchor.START, true),
             new CurveRailPart(new Point(startPoint.x, startPoint.y + Rail.SPACE), 0, innerRadius, centerAngle, RailPartAnchor.START, true)
         ];
-        super(startPoint, angle, parts, name);
+      super(parts, name);
 
         this.innerRadius = innerRadius;
         this.outerRadius = outerRadius;

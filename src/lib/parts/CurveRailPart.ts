@@ -52,7 +52,7 @@ export class CurveRailPart extends RailPart {
   constructor(point: Point, angle: number, radius: number, centerAngle: number, anchorType: RailPartAnchor, hasFeederSocket: boolean) {
     let main = createCurveRailPath(RailPart.WIDTH, radius, centerAngle)
     let detector = createCurveRailPath(RailPart.WIDTH + RailPart.MARGIN, radius, centerAngle)
-    super(point, angle, main, detector, hasFeederSocket);
+    super(main, detector, hasFeederSocket);
 
     this.radius = radius;               // 半径
     this.centerAngle = centerAngle;     // 中心角

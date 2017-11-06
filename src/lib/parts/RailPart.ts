@@ -58,8 +58,8 @@ export abstract class RailPart extends DetectablePart {
    * 子クラスで必ず移動、回転を行うこと。
    * @param {boolean} hasFeederSocket
    */
-  constructor(point: Point, angle: number, path: Path, detectionPath: Path, hasFeederSocket: boolean) {
-    super(point, angle, path, detectionPath, RailPart.FILL_COLORS, RailPart.OPACITIES, true)
+  constructor(path: Path, detectionPath: Path, hasFeederSocket: boolean) {
+    super(path, detectionPath, RailPart.FILL_COLORS, RailPart.OPACITIES, true)
     this.startAngle = 0;
 
     this._hasFeederSocket = hasFeederSocket;
@@ -182,6 +182,18 @@ export abstract class RailPart extends DetectablePart {
     let anchorPoint = this.getAnchorFromType(anchor)
     let relAngle = angle - this.angle;
     this.rotateRelatively(relAngle, anchorPoint);
+  }
+
+  /**
+   * 拡大・縮小する。
+   * @param hor
+   * @param ver
+   * @param {"paper".Point} center
+   */
+  scale(hor, ver, center: Point | RailPartAnchor = this.position) {
+    let centerPoint = this.getAnchorFromType(center)
+    this.path.scale(hor, ver, centerPoint);
+    this.detectionPath.scale(hor, ver, centerPoint);
   }
 
   /**

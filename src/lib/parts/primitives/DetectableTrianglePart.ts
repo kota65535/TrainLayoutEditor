@@ -37,7 +37,7 @@ export class DetectableTrianglePart extends DetectablePart {
   constructor(position: Point, angle:number , width: number, height: number, detectionPath: Path,
               colors: string[], opacities: number[], isBasePartPersistent: boolean) {
     let path = createTrianglePath(width, height)
-    super(position, angle, path, detectionPath, colors, opacities, isBasePartPersistent);
+    super(path, detectionPath, colors, opacities, isBasePartPersistent);
 
     this.width = width;
     this.height = height;

@@ -22,7 +22,7 @@ export class StraightRail extends Rail {
      */
     constructor(startPoint: Point, angle: number, length: number, hasFeederSocket: boolean, name?: string) {
         let part = new StraightRailPart(startPoint, 0, length, RailPartAnchor.START, hasFeederSocket);
-        super(startPoint, 0, [part], name);
+      super([part], name);
 
         this.length = length;
         this.hasFeederSocket = hasFeederSocket;
@@ -48,7 +48,7 @@ export class DoubleStraightRail extends Rail {
             new StraightRailPart(startPoint, 0, length, RailPartAnchor.START, true),
             new StraightRailPart(new Point(startPoint.x, startPoint.y + Rail.SPACE), 0, length, RailPartAnchor.START, true)
         ];
-        super(startPoint, angle, parts, name);
+      super(parts, name);
 
         this.length = length;
 
@@ -74,7 +74,7 @@ export class GappedStraightRail extends Rail {
         let parts = [
             new StraightRailPart(startPoint, 0, length, RailPartAnchor.START, false)
         ];
-        super(startPoint, 0, parts, name);
+      super(parts, name);
 
         this.length = length;
 

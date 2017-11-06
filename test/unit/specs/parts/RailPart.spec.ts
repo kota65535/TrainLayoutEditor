@@ -13,17 +13,29 @@ describe('StraightRailPart', function() {
     initCanvas();
   })
   it('creates new instance', function() {
-    let part = new StraightRailPart(new Point(0, 0), 0, 140, RailPartAnchor.START, true)
-    part.move(new Point(0, 100), RailPartAnchor.START)
-    part.rotate(45, RailPartAnchor.START)
+    let p1 = new StraightRailPart(new Point(0, 0), 45, 140, RailPartAnchor.START, true)
 
-    let part2 = new StraightRailPart(new Point(0, 200), 45, 140, RailPartAnchor.END, true)
+    let p2 = new StraightRailPart(new Point(0, 200), 45, 140, RailPartAnchor.END, true)
+    p2.move(new Point(200, 0), RailPartAnchor.START)
+    p2.rotate(15, RailPartAnchor.START)
 
-    let part3 = new StraightRailPart(new Point(0, 100), 0, 140, RailPartAnchor.START, true)
-    part3.move(new Point(0, 300))
-    part3.rotate(45)
-
+    let p3 = new StraightRailPart(new Point(-100, -100), 15, 140, RailPartAnchor.START, true)
+    p3.moveRelatively(new Point(500, 100))
+    p3.rotateRelatively(45, RailPartAnchor.START)
   });
+  it('sets opacity', function () {
+    let p1 = new StraightRailPart(new Point(0, 400), 45, 140, RailPartAnchor.START, true)
+    p1.opacity = 0.5
+    let p2 = new StraightRailPart(new Point(200, 400), 45, 140, RailPartAnchor.START, true)
+    p2.visible = false
+  })
+  it('scales', function () {
+    let p1 = new StraightRailPart(new Point(0, 200), 45, 140, RailPartAnchor.START, true)
+    p1.scale(0.5, 0.5)
+    let p2 = new StraightRailPart(new Point(200, 200), 45, 140, RailPartAnchor.START, true)
+    p2.scale(0.5, 0.5, RailPartAnchor.START)
+  })
+
 });
 
 describe('CurveRailPart', function() {
@@ -40,9 +52,9 @@ describe('CurveRailPart', function() {
     part2.rotate(15, RailPartAnchor.START)
     // let part2 = new CurveRailPart(new Point(0, 200), 45, 140, RailPartAnchor.END, true)
     //
-    // let part3 = new StraightRailPart(new Point(0, 100), 0, 140, RailPartAnchor.START, true)
-    // part3.move(new Point(0, 300))
-    // part3.rotate(45)
+    // let p3 = new StraightRailPart(new Point(0, 100), 0, 140, RailPartAnchor.START, true)
+    // p3.move(new Point(0, 300))
+    // p3.rotate(45)
 
   });
 });

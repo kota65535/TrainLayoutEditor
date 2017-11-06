@@ -47,7 +47,7 @@ export class Joint extends DetectableRectPart {
   private _jointState: JointState;        // 接続状態
   connectedJoint: Joint | null;
 
-  private _currentScale: number;
+  _currentScale: number;
   private _rail: Rail;
   private _gapSocket: GapSocket;
 
@@ -73,7 +73,6 @@ export class Joint extends DetectableRectPart {
 
   get rail(): Rail { return this._rail; }
   set rail(value: Rail) { this._rail = value; }
-
 
   get gapSocket(): GapSocket { return this._gapSocket; };
   set gapSocket(gapSocket: GapSocket) { this._gapSocket = gapSocket; };
@@ -120,7 +119,7 @@ export class Joint extends DetectableRectPart {
 
     this._direction = direction;
     this.connectedJoint = null;
-    // this.rail = rail;
+    this._rail = rail;
     this._jointState = JointState.OPEN;
     this._currentScale = 1;
 

@@ -5,7 +5,7 @@ import {sprintf} from "sprintf-js";
 import {Joint, JointDirection} from "src/lib/parts/Joint";
 import {FeederSocket} from "src/lib/parts/FeederSocket";
 import logger from "../../logging";
-import {Group, Point} from "paper";
+import {Group, Point, Rectangle} from "paper";
 import {RailPart} from "src/lib/parts/RailPart";
 import {GapSocket} from "src/lib/parts/GapSocket";
 import {Storable} from "./Storable";
@@ -26,47 +26,181 @@ export class Rail implements Storable<RailStoreState> {
 
   // レール間の間隔
   static SPACE = 38;
-
   // ジョイントの位置とレールパーツの両端の位置の間で許される誤差
   static JOINT_TO_RAIL_PART_TOLERANCE = 0.1;
 
-  railParts: RailPart[] = [];
-  joints: Joint[] = [];
-  feederSockets: FeederSocket[] = [];
-  gapSockets: GapSocket[] = [];
+  private _angle: number;
+  private _pathGroup: Group;
 
-  angle: number;
+  private _railParts: RailPart[] = [];
+  // private joints: Joint[] = [];
+  // private feederSockets: FeederSocket[] = [];
+  // private gapSockets: GapSocket[] = [];
 
-  pathGroup: Group = new Group();
-
-  // どのレールパーツに電気が流れるかを表す導電状態マップ。
-  // 状態ID: 導電しているRailPartのIndexのArray
-  conductionTable: Array<Array<number>> = [
+  private _conductionTable: Array<Array<number>> = [
     [0]
   ]
   // 現在の導電状態
-  conductionState: number = 0;
+  private _conductionState: number = 0;
 
 
-  // このレールを特定するためのID。
-  // setterではこのレールを構成するパーツにもIDを設定する。
-  get name() { return this.pathGroup.name; }
+  /**
+   * レールの初期化。基底クラスでは特に重要な処理は行わない。
+   * 子クラスではここでレールパーツの追加と移動・回転を行う。
+   * @param {RailPart} railParts
+   * @param {string} name
+   */
+  constructor(railParts: RailPart[], name: string) {
+    this._angle = 0;
+    this._pathGroup = new Group()
+
+    railParts.forEach((part, i) => this.addRailPart(part, i));
+
+    // IDを設定
+    this.name = name;
+    this.enableJoints()
+    this.enableFeederSockets(false)
+    this.enableGapSockets(false)
+  }
+
+  get angle(): number {
+    return this._angle;
+  }
+
+  get pathGroup(): Group {
+    return this._pathGroup;
+  }
+
+  set pathGroup(value: Group) {
+    this._pathGroup = value;
+  }
+
+  /**
+   * 通電状態と通電しているレールパーツのインデックスのリストをエントリとするテーブル。
+   * @returns {Array<Array<number>>}
+   */
+  get conductionTable(): Array<Array<number>> {
+    return this._conductionTable;
+  }
+
+  set conductionTable(value: Array<Array<number>>) {
+    this._conductionTable = value;
+  }
+
+  /**
+   * 通電状態
+   * @returns {number}
+   */
+  get conductionState(): number {
+    return this._conductionState;
+  }
+
+  set conductionState(value: number) {
+    this._conductionState = value;
+  }
+
+  /**
+   * このレールを構成するレールパーツのリスト
+   * @returns {RailPart[]}
+   */
+  get railParts(): RailPart[] {
+    return this._railParts;
+  }
+
+  /**
+   * ジョイントのリスト
+   * @returns {Joint[]}
+   */
+  get joints(): Joint[] {
+    let joints = this.railParts.flatMap(part => part.joints)
+    return joints.filter((item, pos) => joints.indexOf(item) == pos)
+  }
+
+  /**
+   * フィーダーソケットのリスト
+   * @returns {FeederSocket[]}
+   */
+  get feederSockets(): FeederSocket[] {
+    return this.railParts.map(part => part.feederSocket).filter(Boolean)
+  }
+
+  /**
+   * ギャップソケットのリスト
+   * @returns {GapSocket[]}
+   */
+  get gapSockets(): GapSocket[] {
+    return this.joints.map(j => j.gapSocket)
+  }
+
+  /**
+   * このレールオブジェクトに付けられる一意の名前。IDと同じ。
+   * レールを構成する各パーツにも設定する。
+   * @returns {string}
+   */
+  get name() {
+    return this._pathGroup.name;
+  }
   set name(name: string) {
-    this.pathGroup.name = name;
+    this._pathGroup.name = name;
     this.railParts.forEach((part, i) => part.name = `${this.name}p${i}`);
     this.joints.forEach((j, i) => j.name = `${this.name}j${i}`);
     this.feederSockets.forEach((f, i) => f.name = `${this.name}f${i}`);
     this.gapSockets.forEach((g, i) => g.name = `${this.name}g${i}`);
   }
 
+  /**
+   * レールの開始点
+   * @returns {"paper".Point}
+   */
   get startPoint(): Point { return this.railParts[0].startPoint; }
 
+  /**
+   * レールの開始点のジョイント
+   * @returns {Joint}
+   */
+  get startJoint(): Joint {
+    return this.railParts[0].joints[0];
+  }
+
+  /**
+   * レール全体のバウンディングボックス
+   * @returns {Rectangle}
+   */
+  get bounds(): Rectangle {
+    return this._pathGroup.bounds
+  }
+
+
+  /**
+   * このレールの透明度を設定する
+   * @param {number} value
+   */
+  set opacity(value: number) {
+    // this.pathGroup.opacity = value
+    this.railParts.forEach(e => e.opacity = value);
+    this.joints.forEach(e => e.opacity = value);
+    this.feederSockets.forEach(e => e.opacity = value);
+    this.gapSockets.forEach(e => e.opacity = value);
+  }
+
+  /**
+   * このレールの表示・非表示を設定する。
+   * @param {boolean} value
+   */
+  set visible(value: boolean) {
+    // this.pathGroup.visible = value
+    this.railParts.forEach(e => e.visible = value);
+    this.joints.forEach(e => e.visible = value);
+    // TODO: FeederとGapの扱いはこれでいいか
+    // this.feederSockets.forEach(e => e.visible = value);
+    // this.gapSockets.forEach(e => e.visible = value);
+  }
 
   get storeState(): RailStoreState {
     return {
       name: this.name,
-      conductionState: this.conductionState,
-      conductionTable: this.conductionTable
+      conductionState: this._conductionState,
+      conductionTable: this._conductionTable
     }
   }
 
@@ -74,78 +208,10 @@ export class Rail implements Storable<RailStoreState> {
     if (this.name !== state.name) {
       throw new Error('Rail name does not match')
     }
-    this.conductionState = state.conductionState
-    this.conductionTable = state.conductionTable
+    this._conductionState = state.conductionState
+    this._conductionTable = state.conductionTable
   }
 
-
-  /**
-   * レールの初期化。基底クラスでは特に重要な処理は行わない。
-   * 子クラスではここでレールパーツの追加と移動・回転を行う。
-   *
-   * @param {Point} startPoint
-   * @param {number} angle
-   * @param {RailPart} railParts
-   * @param {string} name
-   */
-  constructor(startPoint: Point, angle: number, railParts: RailPart[], name: string) {
-    this.angle = angle;
-
-    railParts.forEach((part, i) => this._addRailPart(part, i));
-    // 各ジョイントにギャップソケットを追加
-    this.joints.forEach(j => {
-      let gapSocket = new GapSocket(j);
-      this.gapSockets.push(gapSocket);
-      j.gapSocket = gapSocket;
-    });
-
-    // IDを設定
-    this.name = name;
-  }
-
-  /**
-   * レールを構成するレールパーツを追加し、さらにその両端にジョイントを追加する。
-   * Constructorからのみ呼ばれることを想定。
-   * @param {RailPart} railPart
-   * @param {number} index
-   */
-  private _addRailPart(railPart: RailPart, index: number) {
-    // レールパーツは最も下に描画
-    this.pathGroup.insertChild(0, railPart.path);
-
-    // 重複が無いか確認してからジョイントを追加する
-    let startJoint = this._getJointAt(railPart.startPoint);
-    if (! startJoint) {
-      startJoint = new Joint(railPart.startPoint, railPart.startAngle, JointDirection.REVERSE_TO_ANGLE, this);
-      this.joints.push(startJoint);
-    }
-    railPart.joints.push(startJoint);
-
-
-    let endJoint = this._getJointAt(railPart.endPoint);
-    if (! endJoint) {
-      endJoint = new Joint(railPart.endPoint, railPart.endAngle, JointDirection.SAME_TO_ANGLE, this);
-      this.joints.push(endJoint);
-    }
-    railPart.joints.push(endJoint);
-
-    // レールパーツの上に描画
-    this.pathGroup.addChild(startJoint.path)
-    this.pathGroup.addChild(endJoint.path)
-
-    // 各レールパーツにフィーダーソケットの追加
-    // FIXME: 多分これだとレールパーツが複数で一部がフィーダーソケットを持たないときにバグる
-    if (railPart.hasFeederSocket) {
-      let feederSocket = new FeederSocket(railPart);
-      railPart.feederSocket = feederSocket;
-      this.feederSockets.push(feederSocket);
-    }
-
-    // TODO: フィーダーソケットはGroupに追加しなくてもいい？
-
-    railPart.rail = this;
-    this.railParts.push(railPart);
-  }
 
   /**
    * 任意のジョイントを基準に、絶対座標で移動する。
@@ -165,16 +231,16 @@ export class Rail implements Storable<RailStoreState> {
    * @param {Point} difference 移動先の現在位置に対する相対座標
    */
   moveRelatively(difference: Point) {
-    this.railParts.forEach( part => {
+    this.railParts.forEach(part => {
       part.moveRelatively(difference);
     });
-    this.joints.forEach( joint => {
+    this.joints.forEach(joint => {
       joint.moveRelatively(difference);
     });
-    this.feederSockets.forEach( feeder => {
+    this.feederSockets.forEach(feeder => {
       feeder.moveRelatively(difference);
     });
-    this.gapSockets.forEach( gap => {
+    this.gapSockets.forEach(gap => {
       gap.moveRelatively(difference);
     });
   }
@@ -188,7 +254,7 @@ export class Rail implements Storable<RailStoreState> {
     if (anchor instanceof Joint) {
       anchor = anchor.position;
     }
-    let relAngle = angle - this.angle;
+    let relAngle = angle - this._angle;
     this.rotateRelatively(relAngle, anchor);
   }
 
@@ -201,19 +267,19 @@ export class Rail implements Storable<RailStoreState> {
     if (anchor instanceof Joint) {
       anchor = anchor.position;
     }
-    this.railParts.forEach( part => {
+    this.railParts.forEach(part => {
       part.rotateRelatively(angle, <Point>anchor)
     });
-    this.joints.forEach( j => {
+    this.joints.forEach(j => {
       j.rotateRelatively(angle, <Point>anchor);
     })
-    this.feederSockets.forEach( f => {
+    this.feederSockets.forEach(f => {
       f.rotateRelatively(angle, <Point>anchor);
     })
-    this.gapSockets.forEach( g => {
+    this.gapSockets.forEach(g => {
       g.rotateRelatively(angle, <Point>anchor);
     })
-    this.angle += angle;
+    this._angle += angle;
   }
 
   /**
@@ -264,45 +330,12 @@ export class Rail implements Storable<RailStoreState> {
   }
 
   /**
-   * このレールの透明度を設定する
-   * @param {number} value
-   */
-  setOpacity(value) {
-    this.pathGroup.opacity = value
-    // this.railParts.forEach(elem => elem.opacity = value);
-    this.joints.forEach(elem => elem.opacity = value);
-    // this.feederSockets.forEach(elem => elem.opacity = value);
-    // this.gapSockets.forEach(elem => elem.opacity = value);
-  }
-
-  /**
-   * このレールの表示・非表示を設定する。
-   * @param {boolean} isVisible
-   */
-  setVisible(isVisible) {
-    this.pathGroup.visible = isVisible
-    // this.railParts.forEach(elem => elem.visible = isVisible);
-    this.joints.forEach(elem => elem.visible = isVisible);
-    // this.feederSockets.forEach(elem => elem.visible = isVisible);
-    // this.gapSockets.forEach(elem => elem.visible = isVisible);
-  }
-
-  /**
-   * ジョイント情報を表示する。デバッグ用。
-   */
-  showJoints() {
-    this.joints.forEach( joint => {
-      joint.showInfo();
-    });
-  }
-
-  /**
    * 導電状態をトグルスイッチ的に変更する。
    */
   toggleSwitch() {
-    let numStates = Object.keys(this.conductionTable).length;
-    this.conductionState = (this.conductionState + 1) % numStates;
-    this.switch(this.conductionState);
+    let numStates = Object.keys(this._conductionTable).length;
+    this._conductionState = (this._conductionState + 1) % numStates;
+    this.switch(this._conductionState);
   }
 
   /**
@@ -310,12 +343,12 @@ export class Rail implements Storable<RailStoreState> {
    * @param state
    */
   switch(state) {
-    let numStates = Object.keys(this.conductionTable).length;
+    let numStates = Object.keys(this._conductionTable).length;
     if (state > numStates) {
       log.error("No conduction state", state);
       return;
     }
-    this.conductionState = state;
+    this._conductionState = state;
   }
 
   /**
@@ -326,8 +359,8 @@ export class Rail implements Storable<RailStoreState> {
   getJointsFromRailPart(railPart) {
     let ret = null;
     console.log(railPart.startPoint, railPart.endPoint);
-    let startJoint = this.joints.find( j => this._isReasonablyClose(j.position, railPart.startPoint));
-    let endJoint = this.joints.find( j => this._isReasonablyClose(j.position, railPart.endPoint));
+    let startJoint = this.joints.find(j => this._isReasonablyClose(j.position, railPart.startPoint));
+    let endJoint = this.joints.find(j => this._isReasonablyClose(j.position, railPart.endPoint));
     if (startJoint && endJoint) {
       return [startJoint, endJoint];
     }
@@ -338,7 +371,7 @@ export class Rail implements Storable<RailStoreState> {
    * @returns {Array<RailPart>}
    */
   getConductiveRailParts(): RailPart[] {
-    return this.conductionTable[this.conductionState].map(index => this.railParts[index])
+    return this._conductionTable[this._conductionState].map(index => this.railParts[index])
   }
 
   /**
@@ -354,27 +387,92 @@ export class Rail implements Storable<RailStoreState> {
   }
 
   /**
-   * レール全体のバウンディングボックスを取得する。パレット用。
-   * @returns {Rectangle}
-   */
-  getBounds() {
-    // return new Group(this.railParts.map(rp => rp.path)).bounds
-    return this.pathGroup.bounds
-  }
-
-  /**
-   * レールの拡大縮小を行う。パレット用。
+   * 拡大縮小を行う。
    * @param hor
    * @param ver
    */
-  scale(hor, ver, center) {
-    this.pathGroup.scale(hor, ver, center)
+  scale(hor, ver, center = this.bounds.center) {
+    this.railParts.forEach(rp => rp.scale(hor, ver, center));
+    this.joints.forEach(j => j.scale(hor, ver, center));
+    this.feederSockets.forEach(f => f.scale(hor, ver, center));
+    this.gapSockets.forEach(g => g.scale(hor, ver, center));
   }
 
+  /**
+   * 電流のアニメーションを行う。
+   * @param event
+   */
   animate(event) {
     this.railParts.forEach(rp => rp.animate(event));
   }
 
+  /**
+   * ジョイントの検出を有効化する。
+   */
+  enableJoints(value: boolean = true) {
+    this.joints.forEach(j => j.visible = value)
+    this.joints.forEach(j => j.enabled = value)
+  }
+
+  /**
+   * フィーダーの検出を有効化する。
+   */
+  enableFeederSockets(value: boolean = true) {
+    this.feederSockets.forEach(f => f.visible = value)
+    this.feederSockets.forEach(f => f.enabled = value)
+  }
+
+  /**
+   * ギャップの検出を有効化する。
+   */
+  enableGapSockets(value: boolean = true) {
+    this.gapSockets.forEach(g => g.visible = value)
+    this.gapSockets.forEach(g => g.enabled = value)
+  }
+
+  /**
+   * レールを構成するレールパーツを追加し、さらにその両端にジョイントを追加する。
+   * Constructorからのみ呼ばれることを想定。
+   * @param {RailPart} railPart
+   * @param {number} index
+   */
+  private addRailPart(railPart: RailPart, index: number) {
+    // レールパーツをパスグループの一番下に追加する
+    this._pathGroup.insertChild(0, railPart.path);
+
+    // ジョイントが重複して存在しないか確認しつつ、レールパーツにジョイントを追加する
+    // ジョイントにはギャップソケットを追加する
+    // 始点のジョイント
+    let startJoint = this._getJointAt(railPart.startPoint);
+    if (!startJoint) {
+      startJoint = new Joint(railPart.startPoint, railPart.startAngle, JointDirection.REVERSE_TO_ANGLE, this);
+      startJoint.gapSocket = new GapSocket(startJoint)
+    }
+    railPart.joints.push(startJoint);
+
+    // 終点のジョイント
+    let endJoint = this._getJointAt(railPart.endPoint);
+    if (!endJoint) {
+      endJoint = new Joint(railPart.endPoint, railPart.endAngle, JointDirection.SAME_TO_ANGLE, this);
+      endJoint.gapSocket = new GapSocket(endJoint)
+    }
+    railPart.joints.push(endJoint);
+
+    // ジョイントはレールパーツの上に描画する
+    this._pathGroup.addChild(startJoint.path)
+    this._pathGroup.addChild(endJoint.path)
+
+    // レールパーツにフィーダーソケットを追加する
+    // FIXME: 多分これだとレールパーツが複数で一部がフィーダーソケットを持たないときにバグる
+    if (railPart.hasFeederSocket) {
+      railPart.feederSocket = new FeederSocket(railPart)
+      this._pathGroup.addChild(railPart.feederSocket.path)
+    }
+
+    // レールオブジェクトの参照を入れておく
+    railPart.rail = this;
+    this._railParts.push(railPart);
+  }
 
   /**
    * 与えられた座標にジョイントが存在するか否かを返す。
@@ -383,7 +481,7 @@ export class Rail implements Storable<RailStoreState> {
    * @private
    */
   private _getJointAt(point: Point): Joint {
-    return this.joints.find( jo => jo.position.isClose(point, 0.1));
+    return this.joints.find(jo => jo.position.isClose(point, 0.1));
   }
 
   /**
@@ -394,7 +492,7 @@ export class Rail implements Storable<RailStoreState> {
    * @private
    */
   private _getRailPartFromJoints(joint1, joint2) {
-    let parts = this.railParts.filter( part => {
+    let parts = this.railParts.filter(part => {
       return (joint1.position.isClose(part.startPoint, 0.1) && joint2.position.isClose(part.endPoint, 0.1))
         || (joint2.position.isClose(part.startPoint, 0.1) && joint1.position.isClose(part.endPoint, 0.1))
     });
@@ -420,12 +518,14 @@ export class Rail implements Storable<RailStoreState> {
     return point1.isClose(point2, Rail.JOINT_TO_RAIL_PART_TOLERANCE);
   }
 
-  public enableJoints() {
-    this.joints.forEach(j => j.enabled = true)
+  /**
+   * ジョイント情報を表示する。デバッグ用。
+   */
+  showJoints() {
+    this.joints.forEach(joint => {
+      joint.showInfo();
+    });
   }
 
-  public disableJoints() {
-    this.joints.forEach(j => j.enabled = false)
-  }
 }
 

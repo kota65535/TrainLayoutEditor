@@ -38,7 +38,7 @@ export class GapSocket extends DetectableRectPart {
   static OPACITIES = [0.4, 0.4];
 
   private _joint: Joint;                        // 所属するジョイント
-  private _connectedGap: Gap;                   // 接続されたギャップオブジェクト
+  private _gap: Gap;                   // 接続されたギャップオブジェクト
   private _connectionState: GapConnectionState; // ギャップの接続状態
 
   /**
@@ -52,7 +52,7 @@ export class GapSocket extends DetectableRectPart {
     super(joint.position, joint.angle, GapSocket.WIDTH, GapSocket.HEIGHT, detector, GapSocket.FILL_COLORS, GapSocket.OPACITIES, false)
 
     this._joint = joint;
-    this._connectedGap = null;
+    this._gap = null;
 
     // 最初は無効で未接続状態
     this.enabled = true
@@ -71,8 +71,13 @@ export class GapSocket extends DetectableRectPart {
    * 接続されているフィーダーオブジェクト
    * @returns {Gap}
    */
-  get connectedGap(): Gap { return this._connectedGap; }
-  set connectedGap(value: Gap) { this._connectedGap = value; }
+  get gap(): Gap {
+    return this._gap;
+  }
+
+  set gap(value: Gap) {
+    this._gap = value;
+  }
 
   /**
    * ギャップ接続状態
@@ -80,7 +85,7 @@ export class GapSocket extends DetectableRectPart {
    */
   get connectionState() { return this._connectionState; }
   set connectionState(gapState: GapConnectionState) {
-    if (this._enabled) {
+    if (this.enabled) {
       switch(gapState) {
         case GapConnectionState.OPEN:
           this.detectionState = DetectionState.BEFORE_DETECT;
@@ -93,12 +98,12 @@ export class GapSocket extends DetectableRectPart {
           break;
       }
       // 接続されたギャップがあれば同じ状態に変更する
-      if (this._connectedGap) {
-        this._connectedGap.state = gapState;
+      if (this.gap) {
+        this.gap.detectionState = this.detectionState
       }
       this._connectionState = gapState;
     }
-    this.showInfo();
+    // this.showInfo();
   }
 
   get enabled() { return this._enabled; }
@@ -120,7 +125,7 @@ export class GapSocket extends DetectableRectPart {
    */
   connect(isDryRun: boolean = false) {
     if (!this.isConnected()) {
-      this._connectedGap = new Gap(this);
+      this.gap = new Gap(this);
     }
 
     if (isDryRun) {
@@ -137,9 +142,9 @@ export class GapSocket extends DetectableRectPart {
     if (! this.isConnected()) {
       return;
     }
-    this._connectedGap.remove();
+    this.gap.remove();
     this.connectionState = GapConnectionState.OPEN
-    this._connectedGap = null;
+    this.gap = null;
   }
 
   /**
@@ -147,7 +152,7 @@ export class GapSocket extends DetectableRectPart {
    * @returns {boolean}
    */
   isConnected(): boolean {
-    return !!this._connectedGap;
+    return !!this.gap;
   }
 
   /**
@@ -158,7 +163,7 @@ export class GapSocket extends DetectableRectPart {
    */
   containsPath(path: Path): boolean {
     if (this.isConnected()) {
-      return super.containsPath(path) || this._connectedGap.containsPath(path);
+      return super.containsPath(path) || this.gap.containsPath(path);
     } else {
       return super.containsPath(path);
     }
@@ -166,6 +171,6 @@ export class GapSocket extends DetectableRectPart {
 
 
   showInfo() {
-    log.info(`GapSocket @${this._joint.name}: enabled=${this.enabled}, state=${this.connectionState}, detect=${this.detectionState}`);
+    log.info(`GapSocket @${this.joint.name}: enabled=${this.enabled}, state=${this.connectionState}, detect=${this.detectionState}`);
   }
 }

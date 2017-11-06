@@ -46,7 +46,7 @@ export class TrianglePart extends SinglePart {
    */
   constructor(position: Point, angle: number, width: number, height: number, fillColor: string) {
     let path = createTrianglePath(width, height)
-    super(position, angle, path);
+    super(path);
 
     this.width = width;
     this.height = height;

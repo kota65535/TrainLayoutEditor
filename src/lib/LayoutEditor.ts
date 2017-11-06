@@ -126,16 +126,9 @@ export class LayoutEditor {
   changeToRailMode () {
     log.info("Changing to rail mode...");
     // ジョイントを有効化、フィーダーソケットを無効化
-    this.layoutManager.rails.forEach(rail => {
-      rail.joints.forEach(j => j.enabled = true);
-    });
-    this.layoutManager.rails.forEach(rail => {
-      rail.feederSockets.forEach(fs => fs.enabled = false);
-    });
-    this.layoutManager.rails.forEach(rail => {
-      rail.gapSockets.forEach(gs => gs.enabled = false);
-    });
-
+    this.layoutManager.rails.forEach(r => r.enableJoints())
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false) })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets(false))
     log.info("Changed to rail mode.");
   }
 
@@ -150,15 +143,9 @@ export class LayoutEditor {
   changeToFeederMode() {
     log.info("Changed to feeder mode...");
     // ジョイントを無効化、フィーダーソケットを有効化
-    this.layoutManager.rails.forEach(rail => {
-      rail.joints.forEach(j => j.enabled = false);
-    });
-    this.layoutManager.rails.forEach(rail => {
-      rail.feederSockets.forEach(fs => fs.enabled = true);
-    });
-    this.layoutManager.rails.forEach(rail => {
-      rail.gapSockets.forEach(gs => gs.enabled = false);
-    });
+    this.layoutManager.rails.forEach(r => r.enableJoints(false))
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets() })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets(false))
     log.info("Changed to feeder mode.");
   }
 
@@ -168,16 +155,9 @@ export class LayoutEditor {
   changeToGapJoinerMode() {
     log.info("Changed to gap mode...");
     // ジョイントを有効化、フィーダーソケットを無効化
-    this.layoutManager.rails.forEach(rail => {
-      rail.joints.forEach(j => j.enabled = false);
-    });
-    this.layoutManager.rails.forEach(rail => {
-      rail.feederSockets.forEach(fs => fs.enabled = false);
-    });
-    // 現在接続済みのジョイントに対してのみギャップを設置することができる
-    this.layoutManager.rails.forEach(rail => {
-      rail.joints.filter(j => j.isConnected()).forEach(j => j.gapSocket.enabled = true);
-    });
+    this.layoutManager.rails.forEach(r => r.enableJoints(false))
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false) })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets())
     log.info("Changed to gap mode.");
   }
 
@@ -250,9 +230,9 @@ export class LayoutEditor {
       gridPoints.forEach(point => {
         let joint = new Joint(point, this.gridJointsAngle, JointDirection.SAME_TO_ANGLE, null);
         // TODO: デバッグ用
-        joint.opacity = 0;
+        joint.opacity = 1.0;
         // joint.setOpacity(0);
-        joint.visible = false;
+        joint.visible = true;
         this.gridJoints.push(joint);
       });
     }
@@ -310,7 +290,7 @@ export class LayoutEditor {
     this.paletteRail = rail;
     this.paletteRail.rotate(this.paletteRailAngle, this.paletteRail.startPoint);
     // 不可視の状態で置いておく
-    this.paletteRail.setVisible(false);
+    this.paletteRail.visible = false
   }
 
   /**
@@ -318,8 +298,8 @@ export class LayoutEditor {
    * @param {Joint} toJoint
    */
   showRailToPut(toJoint: Joint) {
-    this.paletteRail.setVisible(true);
-    this.paletteRail.setOpacity(0.5);
+    this.paletteRail.visible = true
+    this.paletteRail.opacity = 0.5
     // レール選択直後の場合、対向レールの種類にもとづいてレールガイドの初期向きを設定する
     if (this.jointIndexOfGuide === null) {
       this.initJointOfGuide(toJoint);
@@ -338,8 +318,9 @@ export class LayoutEditor {
    * 設置されるレールのガイドを消去する。
    */
   hideRailToPut() {
-    this.paletteRail.setVisible(false);
-    this.paletteRail.setOpacity(0.2);
+    this.paletteRail.visible = false
+    // TODO: これは変えなくても良い
+    this.paletteRail.opacity = 0.2
     this.paletteRail.disconnect();
     this.paletteRail.move(new Point(0,0), this.paletteRail.joints[0]);
   }
@@ -674,7 +655,7 @@ export class LayoutEditor {
         this.storeProxy.commitFeedersSelected(feederSocket)
       } else {
         feederSocket.path.selected = !feederSocket.path.selected;
-        feederSocket.connectedFeeder.path.selected = !feederSocket.connectedFeeder.path.selected;
+        feederSocket.feeder.path.selected = !feederSocket.feeder.path.selected;
       }
     }
     return true;
@@ -694,7 +675,7 @@ export class LayoutEditor {
       this.putGap(gapSocket);
     } else {
       gapSocket.path.selected = !gapSocket.path.selected;
-      gapSocket.connectedGap.path.selected = !gapSocket.connectedGap.path.selected;
+      gapSocket.gap.path.selected = !gapSocket.gap.path.selected;
     }
     return true;
   }

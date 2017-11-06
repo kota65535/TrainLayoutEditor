@@ -35,7 +35,7 @@ export class RectPart extends SinglePart {
    */
   constructor(position: Point, angle:number , width: number, height: number, fillColor: string) {
     let path = createRectPath(width, height)
-    super(position, angle, path);
+    super(path);
 
     this.width = width;
     this.height = height;

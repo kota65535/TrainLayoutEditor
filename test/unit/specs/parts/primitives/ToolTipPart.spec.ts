@@ -24,13 +24,13 @@ describe('ToolTipPart', function() {
     expect(part.position).toBeAt(new Point(300, 200));
   });
 
-  it('rotates to specified angle around the position', function() {
+  xit('rotates to specified angle around the position', function () {
     let part = new ToolTipPart(new Point(100, 300), 30, 50, 50, 'green');
     part.rotate(45);
     expect(part.position).toBeAt(new Point(100, 300));
     expect(part.angle).toBe(45);
   });
-  it('rotates by specified angle around the position', function() {
+  xit('rotates by specified angle around the position', function () {
     let part = new ToolTipPart(new Point(300, 300), 30, 50, 50, 'green');
     part.rotateRelatively(15);
     expect(part.position).toBeAt(new Point(300, 300));

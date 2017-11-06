@@ -31,7 +31,7 @@ export class CirclePart extends SinglePart {
    */
   constructor(position: Point, angle: number, radius: number, fillColor: string) {
     let path = createCirclePath(radius)
-    super(position, angle, path);
+    super(path);
 
     this.radius = radius;
     this.path.fillColor = fillColor;

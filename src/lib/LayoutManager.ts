@@ -201,7 +201,7 @@ export class LayoutManager {
             // 動くか？
             rail.move(to, rail.startPoint);
         }
-        rail.setOpacity(1.0);
+        rail.opacity = 1.0
         this._registerRail(rail);
         return true;
     }

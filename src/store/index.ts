@@ -46,9 +46,9 @@ const state: State = {
   switchers: [],
   selectedRailName: null,
   currentSwitcherName: null,
-  shouldShowSwitcherConnectionDialog: false,
-
   flowDirectionTable: null,
+
+  cursorShape: null
 }
 
 export default new Vuex.Store<State>({

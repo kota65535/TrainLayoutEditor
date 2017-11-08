@@ -47,4 +47,8 @@ export class LayoutEditorStoreProxy {
   commitFlowDirectionTable(table: FlowDirectionTable) {
     this.store.commit('setFlowDirectionTable', table)
   }
+
+  commitChangeCursorShape(cursorShape: string) {
+    this.store.commit('changeCursorShape', cursorShape)
+  }
 }

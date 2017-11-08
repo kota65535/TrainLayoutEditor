@@ -104,13 +104,19 @@ export class LayoutEditor {
     }
     switch (mode) {
       case EditorMode.RAIL:
-      case EditorMode.TURNOUT_SELECTING:
         this.changeToRailMode();
         this.mode = mode
         break;
+      case EditorMode.TURNOUT_SELECTING:
+        this.changeToRailSelectingMode()
+        this.mode = mode
+        break;
       case EditorMode.FEEDER:
-      case EditorMode.FEEDER_SELECTING:
         this.changeToFeederMode();
+        this.mode = mode
+        break;
+      case EditorMode.FEEDER_SELECTING:
+        this.changeToFeederSelectingMode()
         this.mode = mode
         break;
       case EditorMode.GAP_JOINER:
@@ -122,16 +128,45 @@ export class LayoutEditor {
 
   /**
    * レール設置モードに移行する。
+   *                visible enabled
+   * RailParts:     o       x
+   * Joints:        o       o
+   * FeederSockets: x       x
+   * Feeder:        o       x
+   * GapSockets:    x       x
+   * Gap:           o       x
    */
   changeToRailMode () {
     log.info("Changing to rail mode...");
-    // ジョイントを有効化、フィーダーソケットを無効化
+    this.layoutManager.rails.forEach(r => r.enableRailParts(true, false))
     this.layoutManager.rails.forEach(r => r.enableJoints(true, true))
     this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false, false) })
+    this.layoutManager.rails.forEach(r => { r.enableFeeders(true, false) })
     this.layoutManager.rails.forEach(r => r.enableGapSockets(false, false))
+    this.layoutManager.rails.forEach(r => { r.enableGaps(true, false) })
     log.info("Changed to rail mode.");
   }
 
+  /**
+   * レール選択モードに移行する。
+   *                visible enabled
+   * RailParts:     o       o
+   * Joints:        o       x
+   * FeederSockets: x       x
+   * Feeder:        o       x
+   * GapSockets:    x       x
+   * Gap:           o       x
+   */
+  changeToRailSelectingMode () {
+    log.info("Changing to rail mode...");
+    this.layoutManager.rails.forEach(r => r.enableRailParts(true, true))
+    this.layoutManager.rails.forEach(r => r.enableJoints(true, false))
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false, false) })
+    this.layoutManager.rails.forEach(r => { r.enableFeeders(true, false) })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets(false, false))
+    this.layoutManager.rails.forEach(r => { r.enableGaps(true, false) })
+    log.info("Changed to rail mode.");
+  }
   changePaletteRail (itemId: string) {
     // レールの生成と選択
     this.selectRail(this.railFactory[itemId]());
@@ -139,25 +174,65 @@ export class LayoutEditor {
 
   /**
    * フィーダー設置モードに移行する。
+   *                visible enabled
+   * RailParts:     o       x
+   * Joints:        o       x
+   * FeederSockets: o       o
+   * Feeder:        o       o
+   * GapSockets:    x       x
+   * Gap:           o       x
    */
   changeToFeederMode() {
     log.info("Changed to feeder mode...");
-    // ジョイントを無効化、フィーダーソケットを有効化
+    this.layoutManager.rails.forEach(r => r.enableRailParts(true, false))
     this.layoutManager.rails.forEach(r => r.enableJoints(true, false))
     this.layoutManager.rails.forEach(r => { r.enableFeederSockets(true, true) })
+    this.layoutManager.rails.forEach(r => { r.enableFeeders(true, true) })
     this.layoutManager.rails.forEach(r => r.enableGapSockets(false, false))
+    this.layoutManager.rails.forEach(r => { r.enableGaps(true, false) })
+    log.info("Changed to feeder mode.");
+  }
+
+  /**
+   * フィーダー選択モードに移行する。
+   *                visible enabled
+   * RailParts:     o       x
+   * Joints:        o       x
+   * FeederSockets: o       x
+   * Feeder:        o       o
+   * GapSockets:    x       x
+   * Gap:           o       x
+   */
+  changeToFeederSelectingMode() {
+    log.info("Changed to feeder mode...");
+    this.layoutManager.rails.forEach(r => r.enableRailParts(true, false))
+    this.layoutManager.rails.forEach(r => r.enableJoints(true, false))
+    this.layoutManager.rails.forEach(r => { r.enableFeederSockets(true, false) })
+    this.layoutManager.rails.forEach(r => { r.enableFeeders(true, true) })
+    this.layoutManager.rails.forEach(r => r.enableGapSockets(false, false))
+    this.layoutManager.rails.forEach(r => { r.enableGaps(true, false) })
     log.info("Changed to feeder mode.");
   }
 
   /**
    * ギャップジョイナー設置モードに移行する。
+   *                visible enabled
+   * RailParts:     o       x
+   * Joints:        o       x
+   * FeederSockets: x       x
+   * Feeder:        o       x
+   * GapSockets:    o       o
+   * Gap:           o       x
    */
   changeToGapJoinerMode() {
     log.info("Changed to gap mode...");
     // ジョイントを有効化、フィーダーソケットを無効化
+    this.layoutManager.rails.forEach(r => r.enableRailParts(true, false))
     this.layoutManager.rails.forEach(r => r.enableJoints(true, false))
     this.layoutManager.rails.forEach(r => { r.enableFeederSockets(false, false) })
+    this.layoutManager.rails.forEach(r => { r.enableFeeders(true, false) })
     this.layoutManager.rails.forEach(r => r.enableGapSockets(true, true))
+    this.layoutManager.rails.forEach(r => { r.enableGaps(true, false) })
     log.info("Changed to gap mode.");
   }
 
@@ -473,20 +548,47 @@ export class LayoutEditor {
       this.putGridJoints(event.point);
     }
 
-    // ジョイント上にマウスが乗った時の処理
+    // ターンアウト選択モードの場合
+    // ターンアウト上にカーソルが乗ったらカーソル形状を変更
+    if (this.isTurnoutSelectingMode()) {
+      this.handleMouseMoveOnTurnout(event)
+    } else {
+      // それ以外ならカーソル形状を元に戻す
+      this.storeProxy.commitChangeCursorShape('crosshair')
+    }
+
+    // レールモードまたはギャップモードの場合
+    // ジョイント上にマウスが乗ったら、接続済みでなければガイドを表示
     if (this.isRailMode() || this.isGapJoinerMode()) {
       this.hideRailToPut();
       this.handleMouseMoveOnJoint(event);
     }
-    // フィーダー上にマウスが乗った時の処理
+
+    // フィーダー設置モードの場合
+    // フィーダーソケット上にマウスが乗ったら、接続済みでなければガイドを表示
     if (this.isFeederMode()) {
       this.hideFeederToPut();
       this.handleMouseMoveOnFeeder(event);
     }
-    // ギャップジョイナー上にマウスが乗った時の処理
+
+    // ギャップ設置モードの場合
+    // ギャップジョイナー上にマウスが乗ったら、接続済みでなければガイドを表示
     if (this.isGapJoinerMode()) {
       this.hideGapToPut();
       this.handleMouseMoveOnGapJoiner(event);
+    }
+  }
+
+  /**
+   * レール上にマウスが乗った時の処理
+   * @param {"paper".ToolEvent} event
+   */
+  handleMouseMoveOnTurnout(event: ToolEvent) {
+    // 乗っているレールパーツを取得
+    let railPart = this.layoutManager.getRailPart(event.point);
+    if (railPart && railPart.rail.swichable) {
+      // ターンアウトならばカーソル形状を変更
+      this.storeProxy.commitChangeCursorShape('pointer')
     }
   }
 

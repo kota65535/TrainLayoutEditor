@@ -53,23 +53,21 @@
     }
   })
   export default class RunnerPaletteSwitcher extends Vue {
+    direction: string = '0'
 
     @Prop()
     switcher: SwitcherState
 
-    @Getter
-    selectedRail: RailStoreState
-
+    @State
+    selectedRailName: string
     @State
     currentSwitcherName: string
-
-    @State
-    shouldShowSwitcherConnectionDialog: boolean
-
     @State
     isTurnoutSelected: boolean
 
-    direction: string = '0'
+    @Getter
+    selectedRail: RailStoreState
+
 
     /**
      * スイッチにポイントを接続するための処理を開始する。
@@ -82,7 +80,7 @@
     /**
      * ポイントが選択されたら、ダイアログを表示する
      */
-    @Watch('shouldShowSwitcherConnectionDialog')
+    @Watch('selectedRailName')
     onFeederSelected () {
       if (this.isCurrentSwitcher()) {
         (<any>this.$refs.connectionDialog).show();

@@ -112,7 +112,11 @@ export default ({
 
   setFlowDirectionTable(state: State, table: FlowDirectionTable) {
     state.flowDirectionTable = table
-  }
+  },
+
+  changeCursorShape(state: State, cursorShape: string) {
+    state.cursorShape = cursorShape
+  },
 }) as MutationTree<State>
 
 

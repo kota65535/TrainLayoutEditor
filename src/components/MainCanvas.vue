@@ -1,5 +1,5 @@
 <template>
-  <div class="main-canvas">
+  <div class="main-canvas" :style="{ cursor: cursorShape }">
     <canvas id="editor-canvas" :class="{ darken: shouldDarken }" resize></canvas>
   </div>
 </template>
@@ -33,10 +33,8 @@
 
   @Component
   export default class MainCanvas extends Vue {
-
     grid: GridPaper
     editor: LayoutEditor
-
     shouldDarken: boolean = false
 
     @State
@@ -53,6 +51,9 @@
     rails: RailStoreState[]
     @State
     feederSockets: FeederStoreState[]
+    @State
+    cursorShape: string
+
 
     @Watch('editorMode')
     onSetEditorMode (editorMode: EditorMode) {
@@ -118,8 +119,6 @@
       let tool = new paper.Tool();
       tool.onMouseMove = (event) => {
         this.editor.handleMouseMove(event);
-        // マウスカーソル位置を通知
-//        riot.control.trigger(riot.VE.EDITOR.CURSOR_POSITION_CHANGED, event.point);
       };
 
       tool.onMouseDown = (event) => {
@@ -141,7 +140,7 @@
 
       tool.onMouseDrag = (event) => {
         // FIXME:
-        // this.grid.paperOnMouseDrag(event);
+         this.grid.paperOnMouseDrag(event);
       };
 
       paper.view.onFrame = (event) => {

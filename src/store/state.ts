@@ -29,7 +29,8 @@ export interface State {
 
   switchers: SwitcherState[]
   currentSwitcherName: string
-  shouldShowSwitcherConnectionDialog: boolean
+
+  cursorShape: string
 }
 
 
@@ -59,4 +60,5 @@ export interface SwitcherState {
   direction: number
   stateMap: Array<Array<number>>
   turnouts: RailStoreState[]
+  showDialog: boolean
 }

@@ -10,6 +10,7 @@ import {RailPart} from "src/lib/parts/RailPart";
 import {GapSocket} from "src/lib/parts/GapSocket";
 import {Storable} from "./Storable";
 import {visitor} from "uglify-js";
+import {DetectionState} from "../parts/primitives/DetectablePart";
 
 const log = logger("Rail");
 
@@ -195,6 +196,10 @@ export class Rail implements Storable<RailStoreState> {
     // TODO: FeederとGapの扱いはこれでいいか
     // this.feederSockets.forEach(e => e.visible = value);
     // this.gapSockets.forEach(e => e.visible = value);
+  }
+
+  get swichable(): boolean {
+    return this.conductionTable.length > 1
   }
 
   get storeState(): RailStoreState {
@@ -408,6 +413,14 @@ export class Rail implements Storable<RailStoreState> {
   }
 
   /**
+   * レールパーツの検出を有効化する。
+   */
+  enableRailParts(visible: boolean, enabled: boolean) {
+    this.railParts.forEach(j => j.visible = visible)
+    this.railParts.forEach(j => j.enabled = enabled)
+  }
+
+  /**
    * ジョイントの検出を有効化する。
    */
   enableJoints(visible: boolean, enabled: boolean) {
@@ -416,11 +429,19 @@ export class Rail implements Storable<RailStoreState> {
   }
 
   /**
-   * フィーダーの検出を有効化する。
+   * フィーダーソケットの検出を有効化する。
    */
   enableFeederSockets(visible: boolean, enabled: boolean) {
     this.feederSockets.forEach(f => f.visible = visible)
     this.feederSockets.forEach(f => f.enabled = enabled)
+  }
+
+  /**
+   * フィーダーの検出を有効化する。
+   */
+  enableFeeders(visible: boolean, enabled: boolean) {
+    this.feederSockets.map(fs => fs.feeder).filter(Boolean).forEach(f => f.visible = visible)
+    this.feederSockets.map(fs => fs.feeder).filter(Boolean).forEach(f => f.enabled = enabled)
   }
 
   /**
@@ -429,6 +450,14 @@ export class Rail implements Storable<RailStoreState> {
   enableGapSockets(visible: boolean, enabled: boolean) {
     this.gapSockets.forEach(g => g.visible = visible)
     this.gapSockets.forEach(g => g.enabled = enabled)
+  }
+
+  /**
+   * ギャップソケットの検出を有効化する。
+   */
+  enableGaps(visible: boolean, enabled: boolean) {
+    this.gapSockets.map(fs => fs.gap).filter(Boolean).forEach(f => f.visible = visible)
+    this.gapSockets.map(fs => fs.gap).filter(Boolean).forEach(f => f.enabled = enabled)
   }
 
   /**

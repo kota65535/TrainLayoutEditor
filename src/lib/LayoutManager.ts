@@ -229,7 +229,7 @@ export class LayoutManager {
     }
 
     /**
-     * パスオブジェクトが属するレールオブジェクトを取得する。
+     * 指定の位置にあるレールパーツを取得する。
      * @param {Point} point
      * @return {Rail}
      */

@@ -42,7 +42,7 @@ export abstract class RailPart extends DetectablePart {
   static ANIMATION_MAX = 30
   static ANIMATION_MIN = 60
   static FILL_COLORS = [ 'black', 'deepskybule', 'black']
-  static OPACITIES = [0.5, 0.5, 0]
+  static OPACITIES = [0.3, 0.3, 0]
 
   private _hasFeederSocket: boolean;
   private _flowDirection: FlowDirection;

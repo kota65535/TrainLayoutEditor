@@ -36,9 +36,10 @@ export abstract class DetectablePart extends SinglePart {
     this._opacities = opacities;
     this._isBasePartPersistent = isBasePartPersistent;
 
-    // デフォルトで検出状態は有効
+    // デフォルトで検出状態は無効
     this.enabled = true;
     this.detectionState = DetectionState.BEFORE_DETECT;
+    this.enabled = false;
   }
 
   /**

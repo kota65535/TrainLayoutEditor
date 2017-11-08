@@ -51,4 +51,8 @@ export class LayoutEditorStoreProxy {
   commitChangeCursorShape(cursorShape: string) {
     this.store.commit('changeCursorShape', cursorShape)
   }
+
+  get cursorShape(): string {
+    return this.store.state.cursorShape
+  }
 }

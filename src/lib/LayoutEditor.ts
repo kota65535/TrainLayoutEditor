@@ -375,6 +375,9 @@ export class LayoutEditor {
   showRailToPut(toJoint: Joint) {
     this.paletteRail.visible = true
     this.paletteRail.opacity = 0.5
+    // ジョイントの検出範囲を見せる必要は無いので無効化しておく
+    this.paletteRail.enableJoints(true, false)
+
     // レール選択直後の場合、対向レールの種類にもとづいてレールガイドの初期向きを設定する
     if (this.jointIndexOfGuide === null) {
       this.initJointOfGuide(toJoint);
@@ -554,7 +557,9 @@ export class LayoutEditor {
       this.handleMouseMoveOnTurnout(event)
     } else {
       // それ以外ならカーソル形状を元に戻す
-      this.storeProxy.commitChangeCursorShape('crosshair')
+      if (this.storeProxy.cursorShape !== 'crosshair') {
+        this.storeProxy.commitChangeCursorShape('crosshair')
+      }
     }
 
     // レールモードまたはギャップモードの場合
@@ -588,7 +593,14 @@ export class LayoutEditor {
     let railPart = this.layoutManager.getRailPart(event.point);
     if (railPart && railPart.rail.swichable) {
       // ターンアウトならばカーソル形状を変更
-      this.storeProxy.commitChangeCursorShape('pointer')
+      if (this.storeProxy.cursorShape !== 'pointer') {
+        this.storeProxy.commitChangeCursorShape('pointer')
+      }
+    } else {
+      // それ以外ならカーソル形状を元に戻す
+      if (this.storeProxy.cursorShape !== 'crosshair') {
+        this.storeProxy.commitChangeCursorShape('crosshair')
+      }
     }
   }
 

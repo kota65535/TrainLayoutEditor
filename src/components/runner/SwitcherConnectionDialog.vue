@@ -1,5 +1,5 @@
 <template>
-  <b-modal @shown="onShown" ref="modal" @ok="onOK" :title="`Connecting turnout ${turnout.name} to switcher ${switcher.name}`">
+  <b-modal @shown="onShown" @hidden="onHidden" ref="modal" @ok="onOK" @cancel="onCancel" :title="`Connecting turnout ${turnout.name} to switcher ${switcher.name}`">
     <b-row>
       <b-col cols=3>
         Switcher
@@ -27,7 +27,7 @@
   import {State, Getter} from "vuex-class"
   import {PaletteItem, EditorMode} from '../../lib/PaletteItem'
   import logger from '../../logging'
-  import paper, {Point} from "paper"
+  import paper, {Point, Project} from "paper"
   import {FeederData} from "../../lib/LayoutManager";
   import {FeederSocket, FeederDirection, FeederStoreState} from "src/lib/parts/FeederSocket";
   import {SwitcherState} from "../../store/state";
@@ -40,25 +40,31 @@
 
   @Component
   export default class SwitcherConnectionDialog extends Vue {
+    isShown = false
+
     @Prop()
     turnout: RailStoreState
     @Prop()
     switcher: SwitcherState
 
-    isShown = false
 
-    onShown() {
+    onShown () {
       this.drawRails()
-      // this.isShown = true
+      this.isShown = true
     }
 
-    // @Watch('turnout')
-    // onTurnoutChanged () {
-    //   // Turnoutの状態が変わったら再描画する
-    //   if (this.isShown) {
-    //     this.drawRails()
-    //   }
-    // }
+    onHidden () {
+      this.isShown = false
+    }
+
+    // Turnoutの状態が変わったら再描画する
+    @Watch('turnout')
+    onTurnoutChanged () {
+      // モーダルが完全に表示されていたら実行する
+      if (this.isShown) {
+        this.drawRails()
+      }
+    }
 
     show() {
       (<any>this.$refs.modal).show()
@@ -84,6 +90,10 @@
       this.$emit('ok', this.turnout)
     }
 
+    onCancel () {
+      this.$emit('cancel')
+    }
+
     /**
      * Canvasにレールを描画する。
      * ダイアログが表示された直後でないとCanvasのサイズが0なのでこのタイミングで行う
@@ -95,9 +105,15 @@
         currentProjectIndex = paper.project.index
       }
 
-      // 通電状態ごとに描画
+      // 通電状態ごとにレールを描画
       for (let i=0 ; i < this.turnout.conductionTable.length ; ++i) {
         let target = `${this.turnout.name}-${i}-canvas`
+        // プロジェクトがすでにこのキャンバスによって初期化されていた場合、削除する
+        // ダイアログを閉じると、前のプロジェクトは存在するが使いまわせなくなっているため。
+        let project: Project = this.getPaperProjectByElementId(target)
+        if (project) {
+          project.remove()
+        }
         paper.setup(target);
 
         // 選択中のレールをクローンしてこのキャンバスに描画する
@@ -129,6 +145,16 @@
       if (currentProjectIndex) {
         paper.projects[currentProjectIndex].activate()
       }
+    }
+
+    /**
+     * キャンバス要素のIDで初期化済みのProjectを取得する
+     * @param {string} id
+     * @returns {Project}
+     */
+    private getPaperProjectByElementId (id: string): Project {
+      let project = paper.projects.find(proj => proj.view.element.id === id)
+      return <Project>project
     }
   }
 </script>

@@ -85,7 +85,11 @@ export default ({
   },
 
   selectTurnout(state: State, rail: RailStoreState) {
-    state.selectedRailName = rail.name
+    if (rail) {
+      state.selectedRailName = rail.name
+    } else {
+      state.selectedRailName = null
+    }
   },
 
   updateSwitcher(state: State, switcher: SwitcherState) {

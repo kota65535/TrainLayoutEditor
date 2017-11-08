@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <switcher-connection-dialog ref="connectionDialog" :switcher="switcher" :turnout="selectedRail" @ok="onModalOK"></switcher-connection-dialog>
+    <switcher-connection-dialog ref="connectionDialog" :switcher="switcher" :turnout="selectedRail" @ok="onModalOK" @cancel="onModalCancel"></switcher-connection-dialog>
   </div>
 </template>
 
@@ -81,8 +81,8 @@
      * ポイントが選択されたら、ダイアログを表示する
      */
     @Watch('selectedRailName')
-    onFeederSelected () {
-      if (this.isCurrentSwitcher()) {
+    onFeederSelected (selectedRailName: string) {
+      if (selectedRailName && this.isCurrentSwitcher()) {
         (<any>this.$refs.connectionDialog).show();
       }
     }
@@ -95,7 +95,13 @@
         let switcher = clone(this.switcher)
         switcher.turnouts.push(this.selectedRail)
         this.$store.commit('updateSwitcher', switcher)
+        // 「何も選択していない」状態に戻す
+        this.$store.commit('selectTurnout', null)
       }
+    }
+
+    onModalCancel () {
+      this.$store.commit('selectTurnout', null)
     }
 
     /**
